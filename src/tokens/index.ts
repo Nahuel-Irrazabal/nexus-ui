@@ -23,3 +23,11 @@ export * from './borderRadius';
 // Breakpoints
 export * from './breakpoints';
 
+// Sizes (iconos, avatares, botones, inputs)
+export * from './sizes';
+
+// Opacity
+export * from './opacity';
+
+// Z-Index
+export * from './zIndex';
