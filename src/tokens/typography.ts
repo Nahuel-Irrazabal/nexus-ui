@@ -47,6 +47,7 @@ export const letterSpacings = {
  * Listas para usar en componentes
  */
 export const textVariants = {
+  // Headings
   h1: {
     fontSize: fontSizes.display1,
     fontWeight: fontWeights.bold,
@@ -68,6 +69,17 @@ export const textVariants = {
     fontWeight: fontWeights.semibold,
     lineHeight: fontSizes.xxl * lineHeights.normal,
   },
+  h5: {
+    fontSize: fontSizes.xl,
+    fontWeight: fontWeights.semibold,
+    lineHeight: fontSizes.xl * lineHeights.normal,
+  },
+  h6: {
+    fontSize: fontSizes.lg,
+    fontWeight: fontWeights.semibold,
+    lineHeight: fontSizes.lg * lineHeights.normal,
+  },
+  // Body text
   body: {
     fontSize: fontSizes.md,
     fontWeight: fontWeights.regular,
@@ -78,16 +90,39 @@ export const textVariants = {
     fontWeight: fontWeights.regular,
     lineHeight: fontSizes.lg * lineHeights.normal,
   },
+  bodySmall: {
+    fontSize: fontSizes.sm,
+    fontWeight: fontWeights.regular,
+    lineHeight: fontSizes.sm * lineHeights.normal,
+  },
+  // Supporting text
   caption: {
     fontSize: fontSizes.sm,
     fontWeight: fontWeights.regular,
     lineHeight: fontSizes.sm * lineHeights.normal,
   },
+  overline: {
+    fontSize: fontSizes.xs,
+    fontWeight: fontWeights.medium,
+    lineHeight: fontSizes.xs * lineHeights.normal,
+    letterSpacing: letterSpacings.wider,
+  },
+  label: {
+    fontSize: fontSizes.sm,
+    fontWeight: fontWeights.medium,
+    lineHeight: fontSizes.sm * lineHeights.tight,
+  },
+  // Interactive
   button: {
     fontSize: fontSizes.md,
     fontWeight: fontWeights.semibold,
     lineHeight: fontSizes.md * lineHeights.tight,
     letterSpacing: letterSpacings.wide,
+  },
+  link: {
+    fontSize: fontSizes.md,
+    fontWeight: fontWeights.medium,
+    lineHeight: fontSizes.md * lineHeights.normal,
   },
 } as const satisfies Record<string, TextStyle>;
 
