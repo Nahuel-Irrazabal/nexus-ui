@@ -10,7 +10,8 @@ Esta guía muestra cómo personalizar colores y temas en **@nexus-ui/design-syst
 2. [Nivel 2: Medio - Personalización por tema](#nivel-2-medio)
 3. [Nivel 3: Avanzado - Control total](#nivel-3-avanzado)
 4. [Ejemplos Completos por App](#ejemplos-completos)
-5. [Tips y Mejores Prácticas](#tips-y-mejores-prácticas)
+5. [Estilos de componentes (Input)](#estilos-de-componentes-input)
+6. [Tips y Mejores Prácticas](#tips-y-mejores-prácticas)
 
 ---
 
@@ -434,6 +435,65 @@ export default function App() {
 }
 ```
 </details>
+
+---
+
+## 🧩 Estilos de componentes (Input)
+
+**Caso de uso:** Definir el look de los inputs (box con borde completo, underline, etc.) por app vía theme, sin tocar cada pantalla.
+
+El tema admite `components.input` con propiedades opcionales: `borderRadius`, `borderWidth`, `borderBottomWidth`, `backgroundColor`, `paddingHorizontal`, `paddingVertical`, `labelFontSize`, `helperFontSize`, `inputFontSize`. La librería exporta el preset **`underlineInputTheme`** (solo borde inferior, fondo transparente).
+
+### Con defineTheme (recomendado)
+
+```typescript
+import { defineTheme, underlineInputTheme } from 'nexus-ui';
+
+export const myTheme = defineTheme({
+  light: {
+    primary: '#3B82F6',
+    background: '#F8FAFC',
+    // ... resto de colores
+    components: { input: underlineInputTheme },
+  },
+  dark: {
+    primary: '#60A5FA',
+    background: '#0F172A',
+    // ... resto de colores
+    components: { input: underlineInputTheme },
+  },
+});
+```
+
+### Con createTheme (themeConfig)
+
+```typescript
+import { createTheme } from 'nexus-ui';
+
+const { light, dark } = createTheme({
+  components: {
+    input: {
+      borderWidth: 0,
+      borderBottomWidth: 1,
+      backgroundColor: 'transparent',
+      borderRadius: 0,
+    },
+  },
+});
+// Pasar light/dark a ThemeProvider vía lightTheme/darkTheme
+```
+
+### Personalización granular
+
+```typescript
+components: {
+  input: {
+    ...underlineInputTheme,
+    labelFontSize: 15,
+    paddingVertical: 14,
+  },
+},
+```
 
 ---
 

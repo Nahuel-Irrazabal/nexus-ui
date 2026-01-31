@@ -9,6 +9,8 @@
  */
 
 import { palette, PaletteColor } from '../tokens/colors';
+import type { InputTheme } from './inputTheme';
+import { defaultInputTheme } from './inputTheme';
 
 /**
  * Colores personalizables de un tema
@@ -42,6 +44,14 @@ export interface ThemeColors {
   border?: string;
   /** Color de divisores */
   divider?: string;
+}
+
+/**
+ * Estilos de componentes opcionales (Input, etc.)
+ * Cada app puede definir el look por defecto vía theme
+ */
+export interface ThemeComponents {
+  input?: Partial<InputTheme>;
 }
 
 /**
@@ -85,6 +95,9 @@ export interface ThemeConfig {
    * Sobrescribe primaryColor si está definido
    */
   dark?: ThemeColors;
+  
+  /** Estilos de componentes (Input, etc.) compartidos entre light y dark */
+  components?: ThemeComponents;
 }
 
 /**
@@ -124,6 +137,9 @@ export const defaultLightTheme = {
   // Efectos
   shadow: 'rgba(0, 0, 0, 0.1)',
   overlay: 'rgba(0, 0, 0, 0.5)',
+  
+  // Componentes (Input, etc.)
+  components: { input: defaultInputTheme },
 } as const;
 
 export const defaultDarkTheme = {
@@ -160,6 +176,9 @@ export const defaultDarkTheme = {
   // Efectos
   shadow: 'rgba(0, 0, 0, 0.4)',
   overlay: 'rgba(0, 0, 0, 0.7)',
+  
+  // Componentes (Input, etc.)
+  components: { input: defaultInputTheme },
 } as const;
 
 /**
@@ -199,6 +218,9 @@ export interface Theme {
   // Efectos
   shadow: string;
   overlay: string;
+  
+  /** Estilos de componentes (Input, etc.) opcionales */
+  components?: ThemeComponents;
 }
 
 /**
@@ -234,34 +256,66 @@ export function createTheme(config?: ThemeConfig): {
 
   // Si hay personalización light/dark, usarla (NIVEL 2)
   if (config.light || config.dark) {
-    return {
-      light: mergeThemeColors(defaultLightTheme, config.light),
-      dark: mergeThemeColors(defaultDarkTheme, config.dark),
-    };
+    const lightTheme = mergeThemeColors(defaultLightTheme, config.light);
+    const darkTheme = mergeThemeColors(defaultDarkTheme, config.dark);
+    if (config.components) {
+      lightTheme.components = mergeThemeComponents(defaultLightTheme.components, config.components);
+      darkTheme.components = mergeThemeComponents(defaultDarkTheme.components, config.components);
+    }
+    return { light: lightTheme, dark: darkTheme };
   }
 
   // Si solo hay primaryColor, usar paleta predefinida (NIVEL 1)
   if (config.primaryColor) {
     const primaryPalette = palette[config.primaryColor as keyof typeof palette] || palette.blue;
-
-    return {
-      light: {
-        ...defaultLightTheme,
-        primary: (primaryPalette as any)[500],
-        primaryLight: (primaryPalette as any)[300],
-        primaryDark: (primaryPalette as any)[700],
-      },
-      dark: {
-        ...defaultDarkTheme,
-        primary: (primaryPalette as any)[400],
-        primaryLight: (primaryPalette as any)[300],
-        primaryDark: (primaryPalette as any)[600],
-      },
+    const lightTheme: Theme = {
+      ...defaultLightTheme,
+      primary: (primaryPalette as Record<string, string>)[500],
+      primaryLight: (primaryPalette as Record<string, string>)[300],
+      primaryDark: (primaryPalette as Record<string, string>)[700],
     };
+    const darkTheme: Theme = {
+      ...defaultDarkTheme,
+      primary: (primaryPalette as Record<string, string>)[400],
+      primaryLight: (primaryPalette as Record<string, string>)[300],
+      primaryDark: (primaryPalette as Record<string, string>)[600],
+    };
+    if (config.components) {
+      lightTheme.components = mergeThemeComponents(defaultLightTheme.components, config.components);
+      darkTheme.components = mergeThemeComponents(defaultDarkTheme.components, config.components);
+    }
+    return { light: lightTheme, dark: darkTheme };
+  }
+
+  // Si solo hay components (sin light/dark), aplicar a defaults
+  if (config.components) {
+    const lightTheme = { ...defaultLightTheme };
+    const darkTheme = { ...defaultDarkTheme };
+    lightTheme.components = mergeThemeComponents(defaultLightTheme.components, config.components);
+    darkTheme.components = mergeThemeComponents(defaultDarkTheme.components, config.components);
+    return { light: lightTheme, dark: darkTheme };
   }
 
   // Fallback a default
   return { light: defaultLightTheme, dark: defaultDarkTheme };
+}
+
+/**
+ * Merge de estilos de componentes (input, etc.)
+ */
+function mergeThemeComponents(
+  base: Theme['components'],
+  custom: ThemeComponents
+): ThemeComponents {
+  return {
+    ...base,
+    ...custom,
+    input: {
+      ...defaultInputTheme,
+      ...(base?.input ?? {}),
+      ...(custom.input ?? {}),
+    },
+  };
 }
 
 /**

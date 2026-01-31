@@ -7,8 +7,9 @@
  * @module theme/defineTheme
  */
 
-import { Theme, defaultLightTheme, defaultDarkTheme } from './createTheme';
-import { palette } from '../tokens/colors';
+import { Theme, defaultLightTheme, defaultDarkTheme, ThemeComponents } from './createTheme';
+import type { InputTheme } from './inputTheme';
+import { defaultInputTheme } from './inputTheme';
 
 /**
  * Opciones completas para definir un tema
@@ -48,6 +49,9 @@ export interface DefineThemeColors {
   // Efectos
   shadow?: string;
   overlay?: string;
+  
+  /** Estilos de componentes (Input, etc.) opcionales */
+  components?: ThemeComponents;
 }
 
 /**
@@ -91,6 +95,10 @@ export interface DefineThemeColors {
  * </ThemeProvider>
  * ```
  */
+function mergeInputTheme(base: InputTheme | undefined, custom: Partial<InputTheme> | undefined): InputTheme {
+  return { ...defaultInputTheme, ...base, ...custom };
+}
+
 export function defineTheme(config: {
   light: DefineThemeColors;
   dark: DefineThemeColors;
@@ -98,6 +106,13 @@ export function defineTheme(config: {
   lightTheme: Theme;
   darkTheme: Theme;
 } {
+  const lightComponents = config.light.components
+    ? { input: mergeInputTheme(defaultLightTheme.components?.input, config.light.components.input) }
+    : defaultLightTheme.components;
+  const darkComponents = config.dark.components
+    ? { input: mergeInputTheme(defaultDarkTheme.components?.input, config.dark.components.input) }
+    : defaultDarkTheme.components;
+
   const lightTheme: Theme = {
     // Primarios
     primary: config.light.primary || defaultLightTheme.primary,
@@ -132,6 +147,9 @@ export function defineTheme(config: {
     // Efectos
     shadow: config.light.shadow || defaultLightTheme.shadow,
     overlay: config.light.overlay || defaultLightTheme.overlay,
+    
+    // Componentes
+    components: lightComponents,
   };
 
   const darkTheme: Theme = {
@@ -168,6 +186,9 @@ export function defineTheme(config: {
     // Efectos
     shadow: config.dark.shadow || defaultDarkTheme.shadow,
     overlay: config.dark.overlay || defaultDarkTheme.overlay,
+    
+    // Componentes
+    components: darkComponents,
   };
 
   return { lightTheme, darkTheme };

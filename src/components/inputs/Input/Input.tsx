@@ -1,9 +1,10 @@
 /**
  * Input Component
- * Input personalizable con label, validación y estados
+ * Input personalizable con label, validación y estados.
+ * Estilos por defecto vienen del theme (theme.components.input); cada app puede definirlos en defineTheme/createTheme.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   TextInput,
@@ -14,6 +15,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
+import { defaultInputTheme, type InputTheme } from '../../../theme/inputTheme';
 
 export interface InputProps extends TextInputProps {
   label?: string;
@@ -39,32 +41,53 @@ export function Input({
   const { theme } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
 
+  const inputTheme: InputTheme = useMemo(
+    () => ({ ...defaultInputTheme, ...theme.components?.input }),
+    [theme.components?.input]
+  );
+
   const getBorderColor = () => {
     if (error) return theme.error;
     if (isFocused) return theme.primary;
     return theme.border;
   };
 
+  const containerDynamicStyle: ViewStyle = {
+    borderColor: getBorderColor(),
+    backgroundColor:
+      inputTheme.backgroundColor !== undefined
+        ? inputTheme.backgroundColor
+        : editable
+          ? theme.surface
+          : theme.surfaceVariant,
+    borderRadius: inputTheme.borderRadius ?? defaultInputTheme.borderRadius,
+    borderWidth: inputTheme.borderWidth ?? defaultInputTheme.borderWidth,
+    paddingHorizontal: inputTheme.paddingHorizontal ?? defaultInputTheme.paddingHorizontal,
+    ...(inputTheme.borderBottomWidth !== undefined && {
+      borderBottomWidth: inputTheme.borderBottomWidth,
+    }),
+  };
+
   return (
     <View style={[styles.container, containerStyle]}>
       {label && (
-        <Text style={[styles.label, { color: theme.text }]}>
+        <Text
+          style={[
+            styles.label,
+            {
+              color: theme.text,
+              fontSize: inputTheme.labelFontSize ?? defaultInputTheme.labelFontSize,
+              fontWeight: inputTheme.labelFontWeight ?? defaultInputTheme.labelFontWeight,
+            },
+          ]}
+        >
           {label}
         </Text>
       )}
-      
-      <View
-        style={[
-          styles.inputContainer,
-          {
-            borderColor: getBorderColor(),
-            backgroundColor: editable ? theme.surface : theme.surfaceVariant,
-          },
-          inputStyle,
-        ]}
-      >
+
+      <View style={[styles.inputContainer, containerDynamicStyle, inputStyle]}>
         {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
-        
+
         <TextInput
           {...props}
           editable={editable}
@@ -72,6 +95,8 @@ export function Input({
             styles.input,
             {
               color: theme.text,
+              fontSize: inputTheme.inputFontSize ?? defaultInputTheme.inputFontSize,
+              paddingVertical: inputTheme.paddingVertical ?? defaultInputTheme.paddingVertical,
             },
             leftIcon ? styles.inputWithLeftIcon : null,
             rightIcon ? styles.inputWithRightIcon : null,
@@ -80,7 +105,7 @@ export function Input({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />
-        
+
         {rightIcon && <View style={styles.iconRight}>{rightIcon}</View>}
       </View>
 
@@ -88,7 +113,10 @@ export function Input({
         <Text
           style={[
             styles.helperText,
-            { color: error ? theme.error : theme.textSecondary },
+            {
+              color: error ? theme.error : theme.textSecondary,
+              fontSize: inputTheme.helperFontSize ?? defaultInputTheme.helperFontSize,
+            },
           ]}
         >
           {error || helperText}
@@ -103,21 +131,14 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '500',
     marginBottom: spacing.sm,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: spacing.md,
   },
   input: {
     flex: 1,
-    fontSize: 16,
-    paddingVertical: spacing.md,
   },
   inputWithLeftIcon: {
     marginLeft: spacing.sm,
@@ -134,7 +155,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   helperText: {
-    fontSize: 12,
     marginTop: spacing.xs,
     marginLeft: spacing.xs,
   },
