@@ -3,7 +3,7 @@
  * Maneja tema claro/oscuro, auto-detección del sistema y persistencia
  */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { useColorScheme, ColorSchemeName } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createTheme, ThemeConfig, Theme } from './createTheme';

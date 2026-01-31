@@ -52,6 +52,9 @@ export interface DefineThemeColors {
   
   /** Estilos de componentes (Input, etc.) opcionales */
   components?: ThemeComponents;
+
+  /** Claves custom por app (ej. borderSecondary, accent). Se copian al tema resultante. */
+  [key: string]: string | ThemeComponents | undefined;
 }
 
 /**
@@ -113,6 +116,12 @@ export function defineTheme(config: {
     ? { input: mergeInputTheme(defaultDarkTheme.components?.input, config.dark.components.input) }
     : defaultDarkTheme.components;
 
+  const knownThemeKeys = new Set([
+    'primary', 'primaryLight', 'primaryDark', 'secondary', 'secondaryLight', 'secondaryDark',
+    'background', 'surface', 'surfaceVariant', 'text', 'textSecondary', 'textDisabled',
+    'border', 'divider', 'success', 'error', 'warning', 'info', 'shadow', 'overlay', 'components',
+  ]);
+
   const lightTheme: Theme = {
     // Primarios
     primary: config.light.primary || defaultLightTheme.primary,
@@ -152,6 +161,13 @@ export function defineTheme(config: {
     components: lightComponents,
   };
 
+  // Copiar claves custom (ej. borderSecondary) al tema
+  for (const key of Object.keys(config.light)) {
+    if (!knownThemeKeys.has(key)) {
+      (lightTheme as Record<string, unknown>)[key] = (config.light as Record<string, unknown>)[key];
+    }
+  }
+
   const darkTheme: Theme = {
     // Primarios
     primary: config.dark.primary || defaultDarkTheme.primary,
@@ -190,6 +206,12 @@ export function defineTheme(config: {
     // Componentes
     components: darkComponents,
   };
+
+  for (const key of Object.keys(config.dark)) {
+    if (!knownThemeKeys.has(key)) {
+      (darkTheme as Record<string, unknown>)[key] = (config.dark as Record<string, unknown>)[key];
+    }
+  }
 
   return { lightTheme, darkTheme };
 }

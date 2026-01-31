@@ -63,11 +63,33 @@
 ## 📦 Instalación
 
 ```bash
-# Instalar como dependencia local
+# Instalar como dependencia local (monorepo)
 npm install file:../packages/nexus-ui
+
+# O desde GitHub (rama main; no se publican versiones a npm)
+npm install github:TU_USUARIO/nexus-ui
 
 # Peer dependencies requeridas
 npm install react-native-safe-area-context @react-native-async-storage/async-storage
+```
+
+### Actualizar la librería desde cualquier proyecto
+
+Por lo general solo se hace **push a `main`** sin publicar versiones. Para que un proyecto que ya usa nexus-ui tome los últimos cambios:
+
+| Origen | Cómo actualizar |
+|--------|------------------|
+| **GitHub** (`"nexus-ui": "github:Usuario/nexus-ui"`) | En el proyecto: `npm update nexus-ui` o `npm install github:Usuario/nexus-ui#main`. Si no actualiza, borrar `node_modules/nexus-ui` y volver a `npm install`. |
+| **Monorepo** (`"nexus-ui": "file:../packages/nexus-ui"`) | En el proyecto: `npm install` (o `npm update nexus-ui`). El paquete apunta a la carpeta local; con `npm install` se refresca el link/copia. |
+
+```bash
+# Ejemplo: proyecto que usa nexus-ui desde GitHub
+cd mi-app
+npm update nexus-ui
+
+# Si npm no trae cambios (cache), forzar reinstalación
+rm -rf node_modules/nexus-ui
+npm install
 ```
 
 ---

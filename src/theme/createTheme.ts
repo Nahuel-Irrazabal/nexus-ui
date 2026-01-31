@@ -221,6 +221,9 @@ export interface Theme {
   
   /** Estilos de componentes (Input, etc.) opcionales */
   components?: ThemeComponents;
+
+  /** Permite claves custom por app (ej. borderSecondary, accent, etc.). No usadas por la librería. */
+  [key: string]: string | ThemeComponents | undefined;
 }
 
 /**
@@ -289,8 +292,8 @@ export function createTheme(config?: ThemeConfig): {
 
   // Si solo hay components (sin light/dark), aplicar a defaults
   if (config.components) {
-    const lightTheme = { ...defaultLightTheme };
-    const darkTheme = { ...defaultDarkTheme };
+    const lightTheme: Theme = { ...defaultLightTheme };
+    const darkTheme: Theme = { ...defaultDarkTheme };
     lightTheme.components = mergeThemeComponents(defaultLightTheme.components, config.components);
     darkTheme.components = mergeThemeComponents(defaultDarkTheme.components, config.components);
     return { light: lightTheme, dark: darkTheme };
