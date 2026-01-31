@@ -6,12 +6,12 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { useColorScheme, ColorSchemeName } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createTheme, ThemeConfig, Theme } from './createTheme';
+import { createTheme, ThemeConfig, Theme, ThemeWithCustomColors } from './createTheme';
 
 export type ThemeMode = 'light' | 'dark' | 'auto';
 
 export interface ThemeContextType {
-  theme: Theme;
+  theme: ThemeWithCustomColors;
   mode: ThemeMode;
   isDark: boolean;
   systemTheme: ColorSchemeName;

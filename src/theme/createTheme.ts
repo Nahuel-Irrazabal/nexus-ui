@@ -221,10 +221,16 @@ export interface Theme {
   
   /** Estilos de componentes (Input, etc.) opcionales */
   components?: ThemeComponents;
-
-  /** Permite claves custom por app (ej. borderSecondary, accent, etc.). No usadas por la librería. */
-  [key: string]: string | ThemeComponents | undefined;
 }
+
+/**
+ * Tema tal como lo expone useTheme(): incluye claves custom en la raíz.
+ * Cualquier clave extra que definas en defineTheme (surfaceLight, borderSecondary, etc.)
+ * se infiere como string | undefined, listo para backgroundColor, color, etc.
+ */
+export type ThemeWithCustomColors = Omit<Theme, 'components'> &
+  Record<string, string | undefined> &
+  Pick<Theme, 'components'>;
 
 /**
  * Crea temas personalizados para cada app

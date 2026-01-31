@@ -22,7 +22,7 @@ export * from './tokens';
 export { ThemeProvider } from './theme/ThemeProvider';
 export { createTheme, defaultLightTheme, defaultDarkTheme } from './theme/createTheme';
 export { defineTheme } from './theme/defineTheme';
-export type { Theme, ThemeConfig, ThemeColors, ThemeComponents } from './theme/createTheme';
+export type { Theme, ThemeConfig, ThemeColors, ThemeComponents, ThemeWithCustomColors } from './theme/createTheme';
 export type { DefineThemeColors } from './theme/defineTheme';
 export type { InputTheme } from './theme/inputTheme';
 export { defaultInputTheme, underlineInputTheme } from './theme/inputTheme';

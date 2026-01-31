@@ -161,10 +161,11 @@ export function defineTheme(config: {
     components: lightComponents,
   };
 
-  // Copiar claves custom (ej. borderSecondary) al tema
+  // Claves custom en la raíz (surfaceLight, borderSecondary, etc.) para theme.surfaceLight
   for (const key of Object.keys(config.light)) {
     if (!knownThemeKeys.has(key)) {
-      (lightTheme as Record<string, unknown>)[key] = (config.light as Record<string, unknown>)[key];
+      const value = (config.light as Record<string, unknown>)[key];
+      if (typeof value === 'string') (lightTheme as unknown as Record<string, unknown>)[key] = value;
     }
   }
 
@@ -209,7 +210,8 @@ export function defineTheme(config: {
 
   for (const key of Object.keys(config.dark)) {
     if (!knownThemeKeys.has(key)) {
-      (darkTheme as Record<string, unknown>)[key] = (config.dark as Record<string, unknown>)[key];
+      const value = (config.dark as Record<string, unknown>)[key];
+      if (typeof value === 'string') (darkTheme as unknown as Record<string, unknown>)[key] = value;
     }
   }
 
