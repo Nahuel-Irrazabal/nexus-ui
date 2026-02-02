@@ -10,11 +10,11 @@ import type { TextStyle } from 'react-native';
 import type { TextVariant } from '../tokens/typography';
 
 /**
- * Overrides por variante. Solo hace falta definir las variantes que quieras pisar.
- * El Text usa textVariants[variant] y aplica encima estos overrides.
+ * Overrides por variante. Podés pisar title/body/caption o definir custom (ej. heading).
+ * El Text usa textVariants[variant] si existe, si no body, y aplica encima estos overrides.
  */
 export interface TextTheme {
-  variants?: Partial<Record<TextVariant, Partial<TextStyle>>>;
+  variants?: Partial<Record<TextVariant, Partial<TextStyle>>> & Record<string, Partial<TextStyle> | undefined>;
 }
 
 /**
