@@ -30,7 +30,11 @@ export function Text({
 }: TextProps) {
   const { theme } = useTheme();
 
-  const variantStyle = textVariants[variant] || textVariants.body;
+  const baseVariant = textVariants[variant] || textVariants.body;
+  const themeOverrides = theme.components?.text?.variants?.[variant];
+  const variantStyle = themeOverrides
+    ? { ...baseVariant, ...themeOverrides }
+    : baseVariant;
   const textColor = color || theme.text;
 
   return (
@@ -39,12 +43,11 @@ export function Text({
       style={[
         styles.base,
         {
-          fontSize: variantStyle.fontSize,
-          lineHeight: variantStyle.lineHeight,
+          ...variantStyle,
           color: textColor,
           textAlign: align,
-          fontWeight: bold ? '700' : variantStyle.fontWeight,
           fontStyle: italic ? 'italic' : 'normal',
+          ...(bold && { fontWeight: '700' as const }),
         },
         style,
       ]}

@@ -10,6 +10,8 @@
 import { Theme, defaultLightTheme, defaultDarkTheme, ThemeComponents } from './createTheme';
 import type { InputTheme } from './inputTheme';
 import { defaultInputTheme } from './inputTheme';
+import type { TextTheme } from './textTheme';
+import { defaultTextTheme } from './textTheme';
 
 /**
  * Opciones completas para definir un tema
@@ -102,6 +104,16 @@ function mergeInputTheme(base: InputTheme | undefined, custom: Partial<InputThem
   return { ...defaultInputTheme, ...base, ...custom };
 }
 
+function mergeTextTheme(base: TextTheme | undefined, custom: Partial<TextTheme> | undefined): TextTheme {
+  return {
+    variants: {
+      ...(defaultTextTheme.variants ?? {}),
+      ...(base?.variants ?? {}),
+      ...(custom?.variants ?? {}),
+    },
+  };
+}
+
 export function defineTheme(config: {
   light: DefineThemeColors;
   dark: DefineThemeColors;
@@ -110,10 +122,16 @@ export function defineTheme(config: {
   darkTheme: Theme;
 } {
   const lightComponents = config.light.components
-    ? { input: mergeInputTheme(defaultLightTheme.components?.input, config.light.components.input) }
+    ? {
+        input: mergeInputTheme(defaultLightTheme.components?.input, config.light.components.input),
+        text: mergeTextTheme(defaultLightTheme.components?.text, config.light.components.text),
+      }
     : defaultLightTheme.components;
   const darkComponents = config.dark.components
-    ? { input: mergeInputTheme(defaultDarkTheme.components?.input, config.dark.components.input) }
+    ? {
+        input: mergeInputTheme(defaultDarkTheme.components?.input, config.dark.components.input),
+        text: mergeTextTheme(defaultDarkTheme.components?.text, config.dark.components.text),
+      }
     : defaultDarkTheme.components;
 
   const knownThemeKeys = new Set([

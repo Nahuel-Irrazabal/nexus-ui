@@ -26,6 +26,8 @@ export type { Theme, ThemeConfig, ThemeColors, ThemeComponents, ThemeWithCustomC
 export type { DefineThemeColors } from './theme/defineTheme';
 export type { InputTheme } from './theme/inputTheme';
 export { defaultInputTheme, underlineInputTheme } from './theme/inputTheme';
+export type { TextTheme } from './theme/textTheme';
+export { defaultTextTheme } from './theme/textTheme';
 export type { ThemeMode, ThemeContextType } from './theme/ThemeProvider';
 
 // Hooks

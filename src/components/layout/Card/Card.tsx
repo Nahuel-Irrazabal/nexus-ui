@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   title: {
-    fontSize: textVariants.h4.fontSize,
-    fontWeight: textVariants.h4.fontWeight,
+    fontSize: textVariants.title.fontSize,
+    fontWeight: textVariants.title.fontWeight,
     marginBottom: spacing.xs,
   },
   description: {

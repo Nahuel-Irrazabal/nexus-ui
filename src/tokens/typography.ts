@@ -43,86 +43,24 @@ export const letterSpacings = {
 } as const;
 
 /**
- * Variantes de texto predefinidas
- * Listas para usar en componentes
+ * Variantes de texto de ejemplo.
+ * Las apps pueden extender/pisar vía theme.components.text.variants.
  */
 export const textVariants = {
-  // Headings
-  h1: {
-    fontSize: fontSizes.display1,
-    fontWeight: fontWeights.bold,
-    lineHeight: fontSizes.display1 * lineHeights.tight,
-    letterSpacing: letterSpacings.tight,
-  },
-  h2: {
-    fontSize: fontSizes.display2,
-    fontWeight: fontWeights.semibold,
-    lineHeight: fontSizes.display2 * lineHeights.tight,
-  },
-  h3: {
-    fontSize: fontSizes.xxxl,
-    fontWeight: fontWeights.semibold,
-    lineHeight: fontSizes.xxxl * lineHeights.tight,
-  },
-  h4: {
-    fontSize: fontSizes.xxl,
-    fontWeight: fontWeights.semibold,
-    lineHeight: fontSizes.xxl * lineHeights.normal,
-  },
-  h5: {
-    fontSize: fontSizes.xl,
-    fontWeight: fontWeights.semibold,
-    lineHeight: fontSizes.xl * lineHeights.normal,
-  },
-  h6: {
+  title: {
     fontSize: fontSizes.lg,
-    fontWeight: fontWeights.semibold,
+    fontWeight: fontWeights.medium,
     lineHeight: fontSizes.lg * lineHeights.normal,
   },
-  // Body text
   body: {
     fontSize: fontSizes.md,
     fontWeight: fontWeights.regular,
     lineHeight: fontSizes.md * lineHeights.normal,
   },
-  bodyLarge: {
-    fontSize: fontSizes.lg,
-    fontWeight: fontWeights.regular,
-    lineHeight: fontSizes.lg * lineHeights.normal,
-  },
-  bodySmall: {
-    fontSize: fontSizes.sm,
-    fontWeight: fontWeights.regular,
-    lineHeight: fontSizes.sm * lineHeights.normal,
-  },
-  // Supporting text
   caption: {
     fontSize: fontSizes.sm,
     fontWeight: fontWeights.regular,
     lineHeight: fontSizes.sm * lineHeights.normal,
-  },
-  overline: {
-    fontSize: fontSizes.xs,
-    fontWeight: fontWeights.medium,
-    lineHeight: fontSizes.xs * lineHeights.normal,
-    letterSpacing: letterSpacings.wider,
-  },
-  label: {
-    fontSize: fontSizes.sm,
-    fontWeight: fontWeights.medium,
-    lineHeight: fontSizes.sm * lineHeights.tight,
-  },
-  // Interactive
-  button: {
-    fontSize: fontSizes.md,
-    fontWeight: fontWeights.semibold,
-    lineHeight: fontSizes.md * lineHeights.tight,
-    letterSpacing: letterSpacings.wide,
-  },
-  link: {
-    fontSize: fontSizes.md,
-    fontWeight: fontWeights.medium,
-    lineHeight: fontSizes.md * lineHeights.normal,
   },
 } as const satisfies Record<string, TextStyle>;
 
