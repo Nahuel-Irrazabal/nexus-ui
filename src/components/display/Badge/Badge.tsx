@@ -22,6 +22,7 @@ export interface BadgeProps {
   dot?: boolean;
   color?: BadgeColor;
   variant?: BadgeVariant;
+  label?: string;
   children?: React.ReactNode;
   style?: ViewStyle;
   textStyle?: TextStyle;
@@ -29,24 +30,13 @@ export interface BadgeProps {
   testID?: string;
 }
 
-const getBadgeColor = (color: BadgeColor, theme: any): string => {
-  const colorMap: Record<BadgeColor, string> = {
-    primary: theme.primary,
-    secondary: theme.secondary,
-    success: '#22c55e',
-    warning: '#f59e0b',
-    error: '#ef4444',
-    info: '#3b82f6',
-  };
-  return colorMap[color];
-};
-
 export function Badge({
   count = 0,
   max = 99,
   dot = false,
   color = 'error',
   variant = 'rounded',
+  label,
   children,
   style,
   textStyle,
@@ -54,28 +44,19 @@ export function Badge({
   testID,
 }: BadgeProps) {
   const { theme } = useTheme();
-  const backgroundColor = getBadgeColor(color, theme);
+  const backgroundColor = theme[color] ?? theme.primary;
 
-  // No mostrar badge si count es 0 y showZero es false
-  const shouldShow = dot || count > 0 || showZero;
+  const hasLabel = label != null && label !== '';
+  const shouldShow = hasLabel || dot || count > 0 || showZero;
 
   if (!shouldShow && !children) {
     return null;
   }
 
   const displayCount = count > max ? `${max}+` : count.toString();
+  const displayText = hasLabel ? label : displayCount;
 
-  const getBorderRadius = () => {
-    if (dot) return 4;
-    switch (variant) {
-      case 'rounded':
-        return 10;
-      case 'square':
-        return 2;
-      case 'dot':
-        return 4;
-    }
-  };
+  const borderRadius = dot ? 4 : { rounded: 10, square: 2, dot: 4 }[variant];
 
   const badgeContent = (
     <View
@@ -83,10 +64,10 @@ export function Badge({
         styles.badge,
         {
           backgroundColor,
-          borderRadius: getBorderRadius(),
-          minWidth: dot ? 8 : 18,
+          borderRadius,
+          minWidth: dot ? 8 : hasLabel ? undefined : 18,
           height: dot ? 8 : 18,
-          paddingHorizontal: dot ? 0 : 5,
+          paddingHorizontal: dot ? 0 : hasLabel ? 8 : 5,
         },
         !children && styles.standalone,
         style,
@@ -105,7 +86,7 @@ export function Badge({
             textStyle,
           ]}
         >
-          {displayCount}
+          {displayText}
         </Text>
       )}
     </View>
