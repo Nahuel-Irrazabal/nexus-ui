@@ -23,6 +23,8 @@ export interface BadgeProps {
   color?: BadgeColor;
   variant?: BadgeVariant;
   label?: string;
+  /** Radio de las esquinas. Si no se pasa, se usa el valor según variant/dot. */
+  borderRadius?: number;
   children?: React.ReactNode;
   style?: ViewStyle;
   textStyle?: TextStyle;
@@ -37,6 +39,7 @@ export function Badge({
   color = 'error',
   variant = 'rounded',
   label,
+  borderRadius: borderRadiusProp,
   children,
   style,
   textStyle,
@@ -56,7 +59,8 @@ export function Badge({
   const displayCount = count > max ? `${max}+` : count.toString();
   const displayText = hasLabel ? label : displayCount;
 
-  const borderRadius = dot ? 4 : { rounded: 10, square: 2, dot: 4 }[variant];
+  const defaultRadius = dot ? 4 : { rounded: 10, square: 2, dot: 4 }[variant];
+  const borderRadius = borderRadiusProp ?? defaultRadius;
 
   const badgeContent = (
     <View
