@@ -71,7 +71,11 @@ export function Checkbox({
   };
 
   const backgroundColor = disabled ? theme.border : checked ? checkedColor : 'transparent';
-  const borderColor = error ? theme.error : disabled ? theme.border : checked ? checkedColor : theme.border;
+  const borderColor = error
+    ? theme.error
+    : disabled
+      ? theme.border
+      : (color ?? (checked ? theme.primary : theme.border));
   const borderRadius = borderRadiusProp ?? 4;
   const iconColor = disabled ? theme.textDisabled : theme.textContrast;
 
