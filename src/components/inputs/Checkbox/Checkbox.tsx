@@ -23,6 +23,8 @@ export interface CheckboxProps {
   indeterminate?: boolean;
   error?: string;
   size?: 'small' | 'medium' | 'large';
+  /** Radio de las esquinas del cuadro. Por defecto 4. */
+  borderRadius?: number;
   style?: ViewStyle;
   labelStyle?: TextStyle;
   testID?: string;
@@ -42,41 +44,23 @@ export function Checkbox({
   indeterminate = false,
   error,
   size = 'medium',
+  borderRadius: borderRadiusProp,
   style,
   labelStyle,
   testID,
 }: CheckboxProps) {
   const { theme } = useTheme();
   const checkboxSize = CHECKBOX_SIZES[size];
-  
+  const checked = value || indeterminate;
+
   const handlePress = () => {
-    if (!disabled) {
-      onChange(!value);
-    }
+    if (!disabled) onChange(!value);
   };
 
-  const getBackgroundColor = () => {
-    if (disabled) {
-      return '#e5e7eb';
-    }
-    if (value || indeterminate) {
-      return theme.primary;
-    }
-    return 'transparent';
-  };
-
-  const getBorderColor = () => {
-    if (error) {
-      return '#ef4444';
-    }
-    if (disabled) {
-      return '#d1d5db';
-    }
-    if (value || indeterminate) {
-      return theme.primary;
-    }
-    return '#9ca3af';
-  };
+  const backgroundColor = disabled ? theme.border : checked ? theme.primary : 'transparent';
+  const borderColor = error ? theme.error : disabled ? theme.border : checked ? theme.primary : theme.border;
+  const borderRadius = borderRadiusProp ?? 4;
+  const iconColor = disabled ? theme.textDisabled : theme.textContrast;
 
   return (
     <View style={[styles.container, style]} testID={testID}>
@@ -92,8 +76,9 @@ export function Checkbox({
             {
               width: checkboxSize,
               height: checkboxSize,
-              backgroundColor: getBackgroundColor(),
-              borderColor: getBorderColor(),
+              borderRadius,
+              backgroundColor,
+              borderColor,
               opacity: disabled ? 0.5 : 1,
             },
           ]}
@@ -105,21 +90,18 @@ export function Checkbox({
                 {
                   width: checkboxSize * 0.5,
                   height: 2,
-                  backgroundColor: disabled ? '#9ca3af' : '#ffffff',
+                  backgroundColor: iconColor,
                 },
               ]}
             />
           )}
-          
+
           {!indeterminate && value && (
             <View style={styles.checkmarkContainer}>
               <Text
                 style={[
                   styles.checkmark,
-                  {
-                    fontSize: checkboxSize * 0.7,
-                    color: disabled ? '#9ca3af' : '#ffffff',
-                  },
+                  { fontSize: checkboxSize * 0.7, color: iconColor },
                 ]}
               >
                 ✓
@@ -132,9 +114,7 @@ export function Checkbox({
           <Text
             style={[
               styles.label,
-              {
-                color: disabled ? '#9ca3af' : theme.text,
-              },
+              { color: disabled ? theme.textDisabled : theme.text },
               labelStyle,
             ]}
           >
@@ -144,7 +124,7 @@ export function Checkbox({
       </TouchableOpacity>
 
       {error && (
-        <Text style={[styles.error, { color: '#ef4444' }]}>
+        <Text style={[styles.error, { color: theme.error }]}>
           {error}
         </Text>
       )}
@@ -213,7 +193,7 @@ export function CheckboxGroup({
       </View>
 
       {error && (
-        <Text style={[styles.error, { color: '#ef4444' }]}>
+        <Text style={[styles.error, { color: theme.error }]}>
           {error}
         </Text>
       )}
@@ -238,7 +218,6 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     borderWidth: 2,
-    borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
   },
