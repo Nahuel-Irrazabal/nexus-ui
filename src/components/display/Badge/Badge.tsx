@@ -12,6 +12,7 @@ import {
   TextStyle,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
+import { borderRadius as radiusTokens } from '../../../tokens/borderRadius';
 
 type BadgeVariant = 'rounded' | 'square' | 'dot';
 type BadgeColor = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
@@ -59,7 +60,9 @@ export function Badge({
   const displayCount = count > max ? `${max}+` : count.toString();
   const displayText = hasLabel ? label : displayCount;
 
-  const defaultRadius = dot ? 4 : { rounded: 10, square: 2, dot: 4 }[variant];
+  const defaultRadius = dot
+    ? radiusTokens.sm
+    : { rounded: radiusTokens.full, square: radiusTokens.xs, dot: radiusTokens.sm }[variant];
   const borderRadius = borderRadiusProp ?? defaultRadius;
 
   const badgeContent = (

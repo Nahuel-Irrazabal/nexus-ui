@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
+import { borderRadius } from '../../../tokens/borderRadius';
 
 type AvatarSize = 'xs' | 'small' | 'medium' | 'large' | 'xl' | number;
 type AvatarShape = 'circle' | 'square' | 'rounded';
@@ -43,12 +44,12 @@ const getSize = (size: AvatarSize): number => {
   return AVATAR_SIZES[size];
 };
 
-const getBorderRadius = (shape: AvatarShape, size: number): number => {
+const getAvatarRadius = (shape: AvatarShape, size: number): number => {
   switch (shape) {
     case 'circle':
-      return size / 2;
+      return borderRadius.full;
     case 'square':
-      return 0;
+      return borderRadius.none;
     case 'rounded':
       return size * 0.2;
   }
@@ -70,13 +71,13 @@ export function Avatar({
 }: AvatarProps) {
   const { theme } = useTheme();
   const avatarSize = getSize(size);
-  const borderRadius = getBorderRadius(shape, avatarSize);
+  const avatarRadius = getAvatarRadius(shape, avatarSize);
   const fontSize = getFontSize(avatarSize);
 
   const containerStyle: ViewStyle = {
     width: avatarSize,
     height: avatarSize,
-    borderRadius,
+    borderRadius: avatarRadius,
     backgroundColor: theme.surface,
     borderWidth: 2,
     borderColor: theme.border,

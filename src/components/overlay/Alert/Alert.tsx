@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
+import { borderRadius } from '../../../tokens/borderRadius';
 
 type AlertVariant = 'info' | 'success' | 'warning' | 'destructive';
 type ButtonStyle = 'default' | 'cancel' | 'destructive';
@@ -165,14 +166,14 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     maxWidth: 320,
-    borderRadius: 16,
+    borderRadius: borderRadius.xl,
     padding: spacing.xl,
     alignItems: 'center',
   },
   iconContainer: {
     width: 56,
     height: 56,
-    borderRadius: 28,
+    borderRadius: borderRadius.full,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.md,
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
-    borderRadius: 8,
+    borderRadius: borderRadius.md,
     borderWidth: 1,
     alignItems: 'center',
   },

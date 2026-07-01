@@ -6,6 +6,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated, ViewStyle } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
+import { borderRadius as radiusTokens } from '../../../tokens/borderRadius';
 
 export type SkeletonVariant = 'text' | 'avatar' | 'card' | 'image' | 'custom';
 export type AnimationType = 'pulse' | 'wave' | 'none';
@@ -63,31 +64,31 @@ export function SkeletonLoader({
         return {
           width: width || '100%',
           height: height || 16,
-          borderRadius: borderRadius ?? 4,
+          borderRadius: borderRadius ?? radiusTokens.sm,
         };
       case 'avatar':
         return {
           width: width || 40,
           height: height || 40,
-          borderRadius: borderRadius ?? 20,
+          borderRadius: borderRadius ?? radiusTokens['2xl'],
         };
       case 'card':
         return {
           width: width || '100%',
           height: height || 200,
-          borderRadius: borderRadius ?? 12,
+          borderRadius: borderRadius ?? radiusTokens.lg,
         };
       case 'image':
         return {
           width: width || '100%',
           height: height || 150,
-          borderRadius: borderRadius ?? 8,
+          borderRadius: borderRadius ?? radiusTokens.md,
         };
       case 'custom':
         return {
           width: width || 100,
           height: height || 100,
-          borderRadius: borderRadius ?? 0,
+          borderRadius: borderRadius ?? radiusTokens.none,
         };
       default:
         return {};

@@ -7,6 +7,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { SkeletonLoader } from './SkeletonLoader';
 import { spacing } from '../../../tokens/spacing';
+import { borderRadius } from '../../../tokens/borderRadius';
 
 export type SkeletonListVariant = 'listItem' | 'card' | 'avatar';
 
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     marginLeft: spacing.md,
   },
   cardItem: {
-    borderRadius: 12,
+    borderRadius: borderRadius.lg,
     overflow: 'hidden',
   },
   cardContent: {

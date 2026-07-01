@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
+import { borderRadius } from '../../../tokens/borderRadius';
 import { Button } from '../../buttons';
 
 export interface ErrorStateProps {
@@ -54,7 +55,7 @@ export function ErrorState({
       style={{
         width: 64,
         height: 64,
-        borderRadius: 32,
+        borderRadius: borderRadius.full,
         backgroundColor: '#fef2f2',
         justifyContent: 'center',
         alignItems: 'center',

@@ -15,6 +15,7 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { textVariants } from '../../../tokens/typography';
+import { borderRadius } from '../../../tokens/borderRadius';
 
 // Tipo para iconos de Ionicons (compatible sin instalar @expo/vector-icons)
 type IoniconsName = string;
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: borderRadius.full,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
+import { borderRadius } from '../../../tokens/borderRadius';
 
 export interface RadioButtonProps {
   label?: string;
@@ -78,7 +79,7 @@ export function RadioButton({
           {
             width: radioSize,
             height: radioSize,
-            borderRadius: radioSize / 2,
+            borderRadius: borderRadius.full,
             borderColor: getBorderColor(),
             opacity: disabled ? 0.5 : 1,
           },
@@ -91,7 +92,7 @@ export function RadioButton({
               {
                 width: innerSize,
                 height: innerSize,
-                borderRadius: innerSize / 2,
+                borderRadius: borderRadius.full,
                 backgroundColor: disabled ? '#9ca3af' : theme.primary,
               },
             ]}

@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
+import { borderRadius } from '../../../tokens/borderRadius';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 type ButtonSize = 'small' | 'medium' | 'large';
@@ -204,7 +205,7 @@ export function Button({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 8,
+    borderRadius: borderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -231,6 +232,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     minWidth: 48,
     minHeight: 48,
+    alignSelf: 'flex-start',
   },
   fullWidth: {
     width: '100%',

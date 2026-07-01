@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
+import { borderRadius as radiusTokens } from '../../../tokens/borderRadius';
 
 export interface CheckboxProps {
   label?: string;
@@ -25,7 +26,7 @@ export interface CheckboxProps {
   size?: 'small' | 'medium' | 'large';
   /** Color del borde y relleno cuando está checked/indeterminado. Si no se pasa, se usa theme.primary. */
   color?: string;
-  /** Radio de las esquinas del cuadro. Por defecto 4. */
+  /** Radio de las esquinas del cuadro. Por defecto borderRadius.sm (4). */
   borderRadius?: number;
   /** Estilos del ícono de check (✓). Por ejemplo fontSize, color, fontWeight. */
   checkStyle?: TextStyle;
@@ -76,7 +77,7 @@ export function Checkbox({
     : disabled
       ? theme.border
       : (color ?? (checked ? theme.primary : theme.border));
-  const borderRadius = borderRadiusProp ?? 4;
+  const borderRadius = borderRadiusProp ?? radiusTokens.sm;
   const iconColor = disabled ? theme.textDisabled : theme.textContrast;
 
   return (
@@ -258,7 +259,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   indeterminateLine: {
-    borderRadius: 1,
+    borderRadius: radiusTokens.xs,
   },
   label: {
     fontSize: 15,

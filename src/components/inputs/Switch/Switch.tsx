@@ -15,6 +15,8 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
+import { borderRadius } from '../../../tokens/borderRadius';
+import { getShadow } from '../../../tokens/shadows';
 
 export interface SwitchProps {
   value: boolean;
@@ -61,7 +63,7 @@ export function Switch({
   descriptionStyle,
   testID,
 }: SwitchProps) {
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
   const { width, height, thumbSize } = SWITCH_SIZES[size];
   const translateX = useRef(new Animated.Value(value ? 1 : 0)).current;
 
@@ -120,6 +122,7 @@ export function Switch({
                 width: thumbSize,
                 height: thumbSize,
                 transform: [{ translateX: thumbTranslateX }],
+                ...getShadow('sm', isDark),
               },
             ]}
           >
@@ -175,20 +178,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   track: {
-    borderRadius: 100,
+    borderRadius: borderRadius.full,
     justifyContent: 'center',
   },
   thumb: {
-    borderRadius: 100,
+    borderRadius: borderRadius.full,
     backgroundColor: '#ffffff',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
-    elevation: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },

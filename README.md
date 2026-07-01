@@ -269,9 +269,16 @@ palette.info.main     // #2196F3
 ```tsx
 import { textVariants } from 'nexus-ui';
 
-textVariants.title   // Títulos de sección/card
-textVariants.body    // Texto cuerpo
-textVariants.caption // Texto secundario / pie
+textVariants.display  // Texto hero / marketing
+textVariants.h1       // Encabezado nivel 1
+textVariants.h2       // Encabezado nivel 2
+textVariants.h3       // Encabezado nivel 3
+textVariants.subtitle // Subtítulo
+textVariants.title    // Títulos de sección/card
+textVariants.body     // Texto cuerpo
+textVariants.button   // Texto de botones
+textVariants.caption  // Texto secundario / pie
+textVariants.overline // Labels pequeños en mayúsculas
 ```
 
 ### Shadows

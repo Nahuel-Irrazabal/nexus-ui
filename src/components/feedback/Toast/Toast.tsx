@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../../hooks/useTheme';
+import { borderRadius } from '../../../tokens/borderRadius';
+import { getShadow } from '../../../tokens/shadows';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -90,7 +92,7 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast, onHide }: ToastItemProps) {
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
   const [animation] = useState(new Animated.Value(0));
 
   React.useEffect(() => {
@@ -139,7 +141,12 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
     <Animated.View
       style={[
         styles.toast,
-        { backgroundColor, transform: [{ translateY }], opacity: animation },
+        {
+          backgroundColor,
+          transform: [{ translateY }],
+          opacity: animation,
+          ...getShadow('lg', isDark),
+        },
       ]}
     >
       <Text style={styles.emoji}>{emoji}</Text>
@@ -169,12 +176,7 @@ const styles = StyleSheet.create({
     width: width - 32,
     marginBottom: 8,
     padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    borderRadius: borderRadius.lg,
   },
   emoji: {
     fontSize: 20,

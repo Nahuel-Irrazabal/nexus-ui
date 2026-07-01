@@ -17,6 +17,8 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { textVariants } from '../../../tokens/typography';
+import { borderRadius } from '../../../tokens/borderRadius';
+import { getShadow } from '../../../tokens/shadows';
 
 export type CardVariant = 'flat' | 'elevated' | 'outlined';
 
@@ -54,11 +56,7 @@ export const Card: React.FC<CardProps> & CardComposition = ({
       case 'elevated':
         return {
           backgroundColor: theme.surface,
-          shadowColor: isDark ? '#000' : theme.shadow,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: isDark ? 0.3 : 0.1,
-          shadowRadius: 4,
-          elevation: 2,
+          ...getShadow('sm', isDark),
         };
       case 'outlined':
         return {
@@ -197,7 +195,7 @@ Card.Actions = CardActions;
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 12,
+    borderRadius: borderRadius.lg,
     overflow: 'hidden',
   },
   pressed: {

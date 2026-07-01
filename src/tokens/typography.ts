@@ -43,10 +43,35 @@ export const letterSpacings = {
 } as const;
 
 /**
- * Variantes de texto de ejemplo.
+ * Escala de variantes de texto.
  * Las apps pueden extender/pisar vía theme.components.text.variants.
  */
 export const textVariants = {
+  display: {
+    fontSize: fontSizes.display1,
+    fontWeight: fontWeights.bold,
+    lineHeight: fontSizes.display1 * lineHeights.tight,
+  },
+  h1: {
+    fontSize: fontSizes.xxxl,
+    fontWeight: fontWeights.bold,
+    lineHeight: fontSizes.xxxl * lineHeights.tight,
+  },
+  h2: {
+    fontSize: fontSizes.xxl,
+    fontWeight: fontWeights.semibold,
+    lineHeight: fontSizes.xxl * lineHeights.tight,
+  },
+  h3: {
+    fontSize: fontSizes.xl,
+    fontWeight: fontWeights.semibold,
+    lineHeight: fontSizes.xl * lineHeights.normal,
+  },
+  subtitle: {
+    fontSize: fontSizes.lg,
+    fontWeight: fontWeights.semibold,
+    lineHeight: fontSizes.lg * lineHeights.normal,
+  },
   title: {
     fontSize: fontSizes.lg,
     fontWeight: fontWeights.medium,
@@ -57,10 +82,21 @@ export const textVariants = {
     fontWeight: fontWeights.regular,
     lineHeight: fontSizes.md * lineHeights.normal,
   },
+  button: {
+    fontSize: fontSizes.md,
+    fontWeight: fontWeights.semibold,
+    lineHeight: fontSizes.md * lineHeights.tight,
+  },
   caption: {
     fontSize: fontSizes.sm,
     fontWeight: fontWeights.regular,
     lineHeight: fontSizes.sm * lineHeights.normal,
+  },
+  overline: {
+    fontSize: fontSizes.xs,
+    fontWeight: fontWeights.semibold,
+    lineHeight: fontSizes.xs * lineHeights.tight,
+    letterSpacing: letterSpacings.wide,
   },
 } as const satisfies Record<string, TextStyle>;
 

@@ -11,7 +11,7 @@ import { textVariants } from '../../../tokens/typography';
 type TypographyVariant = keyof typeof textVariants;
 
 export interface TextProps extends RNTextProps {
-  /** Variantes de nexus-ui (title, body, caption) o custom definidas en theme.components.text.variants */
+  /** Variantes de nexus-ui (display, h1, h2, h3, subtitle, title, body, button, caption, overline) o custom definidas en theme.components.text.variants */
   variant?: TypographyVariant | (string & {});
   color?: string;
   align?: 'left' | 'center' | 'right' | 'justify';

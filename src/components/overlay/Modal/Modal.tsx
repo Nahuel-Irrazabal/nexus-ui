@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
+import { borderRadius } from '../../../tokens/borderRadius';
 
 type ModalSize = 'small' | 'medium' | 'large' | 'fullscreen';
 type AnimationType = 'fade' | 'slide' | 'none';
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
   },
   container: {
     maxHeight: '90%',
-    borderRadius: 16,
+    borderRadius: borderRadius.xl,
     overflow: 'hidden',
   },
   fullscreenContainer: {
