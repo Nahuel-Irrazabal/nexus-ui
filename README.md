@@ -153,7 +153,7 @@ function LoginScreen() {
 
 ## 🧩 Componentes
 
-Nexus UI incluye **27+ componentes** organizados en **10 categorías**:
+Nexus UI incluye **29+ componentes** organizados en **10 categorías**:
 
 ### 📐 Layout
 
@@ -176,6 +176,7 @@ Nexus UI incluye **27+ componentes** organizados en **10 categorías**:
 | `Checkbox` | Checkbox con estados y animaciones |
 | `RadioButton` | Radio button para selección única |
 | `Switch` | Toggle switch animado |
+| `Chip` / `ChipGroup` | Etiqueta seleccionable compacta para filtros o selección simple/múltiple, agrupable con scroll horizontal o wrap |
 
 ### 📝 Typography
 
@@ -207,7 +208,7 @@ Nexus UI incluye **27+ componentes** organizados en **10 categorías**:
 
 | Componente | Descripción |
 |------------|-------------|
-| `Toast` | Sistema de notificaciones animadas (success, error, warning, info) |
+| `Toast` | Sistema de notificaciones animadas (success, error, warning, info). `ToastProvider` acepta una prop `icons` para reemplazar los emojis por defecto (ej. `@expo/vector-icons`) |
 | `EmptyState` | Estados vacíos con ilustración |
 | `ErrorState` | Estados de error con acción de retry |
 
@@ -216,7 +217,9 @@ Nexus UI incluye **27+ componentes** organizados en **10 categorías**:
 | Componente | Descripción |
 |------------|-------------|
 | `Modal` | Modal personalizable con animaciones |
-| `Alert` | Alertas y diálogos de confirmación |
+| `Alert` | Alertas y diálogos de confirmación. Acepta una prop `icon` para reemplazar el emoji por defecto |
+| `AlertProvider` | Puente imperativo sobre `Alert` (mismo patrón que `ToastProvider`) — usar junto con el hook `useAlert` para confirmaciones sin manejar estado `visible` a mano |
+| `Sheet` | Bottom sheet con backdrop y animación deslizante desde abajo |
 
 ### 🛠️ Utils
 
@@ -415,12 +418,13 @@ const {
 
 ## 🪝 Hooks
 
-Nexus UI incluye **7 hooks** reutilizables:
+Nexus UI incluye **8 hooks** reutilizables:
 
 | Hook | Descripción |
 |------|-------------|
 | `useTheme` | Acceso al tema actual y funciones de control |
 | `useToast` | Mostrar notificaciones toast |
+| `useAlert` | Mostrar diálogos de confirmación imperativos (requiere `AlertProvider`) |
 | `useDebounce` | Debounce de valores |
 | `useAsync` | Manejo de operaciones async con estados |
 | `usePrevious` | Obtener valor anterior de una variable |
@@ -445,6 +449,38 @@ function MyComponent() {
   };
   
   return <Button title="Guardar" onPress={handleSave} />;
+}
+```
+
+### Ejemplo: useAlert
+
+```tsx
+// Envolver la app (junto a ThemeProvider/ToastProvider)
+import { AlertProvider } from 'nexus-ui';
+
+<AlertProvider>
+  <MyApp />
+</AlertProvider>
+
+// En cualquier componente hijo
+import { useAlert } from 'nexus-ui';
+
+function DeleteButton() {
+  const { confirm } = useAlert();
+
+  const handleDelete = () => {
+    confirm({
+      title: '¿Eliminar item?',
+      message: 'Esta acción no se puede deshacer',
+      variant: 'destructive',
+      buttons: [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Eliminar', style: 'destructive', onPress: doDelete },
+      ],
+    });
+  };
+
+  return <Button title="Eliminar" variant="danger" onPress={handleDelete} />;
 }
 ```
 
