@@ -3,7 +3,7 @@
  * Diálogo de alerta simple para confirmaciones
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import {
   Modal,
   View,
@@ -16,6 +16,7 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius } from '../../../tokens/borderRadius';
+import { ThemeWithCustomColors } from '../../../theme/createTheme';
 
 type AlertVariant = 'info' | 'success' | 'warning' | 'destructive';
 type ButtonStyle = 'default' | 'cancel' | 'destructive';
@@ -32,6 +33,8 @@ export interface AlertProps {
   title: string;
   message?: string;
   variant?: AlertVariant;
+  /** Ícono a mostrar en vez del emoji por defecto (ej. un ícono de @expo/vector-icons). */
+  icon?: ReactNode;
   buttons?: AlertButton[];
   style?: ViewStyle;
   testID?: string;
@@ -44,12 +47,19 @@ const VARIANT_ICONS: Record<AlertVariant, string> = {
   destructive: '❌',
 };
 
-const VARIANT_COLORS: Record<AlertVariant, string> = {
-  info: '#3b82f6',
-  success: '#22c55e',
-  warning: '#f59e0b',
-  destructive: '#ef4444',
-};
+function getVariantColor(variant: AlertVariant, theme: ThemeWithCustomColors): string {
+  switch (variant) {
+    case 'success':
+      return theme.success;
+    case 'warning':
+      return theme.warning;
+    case 'destructive':
+      return theme.error;
+    case 'info':
+    default:
+      return theme.info;
+  }
+}
 
 export function Alert({
   visible,
@@ -57,11 +67,13 @@ export function Alert({
   title,
   message,
   variant = 'info',
+  icon,
   buttons = [{ text: 'OK', style: 'default' }],
   style,
   testID,
 }: AlertProps) {
   const { theme } = useTheme();
+  const variantColor = getVariantColor(variant, theme);
 
   const handleButtonPress = (button: AlertButton) => {
     if (button.onPress) {
@@ -75,7 +87,7 @@ export function Alert({
   const getButtonColor = (buttonStyle?: ButtonStyle) => {
     switch (buttonStyle) {
       case 'destructive':
-        return '#ef4444';
+        return theme.error;
       case 'cancel':
         return theme.textSecondary;
       default:
@@ -91,7 +103,7 @@ export function Alert({
       onRequestClose={onClose}
       testID={testID}
     >
-      <View style={styles.backdrop}>
+      <View style={[styles.backdrop, { backgroundColor: theme.overlay }]}>
         <View
           style={[
             styles.container,
@@ -103,10 +115,10 @@ export function Alert({
           <View
             style={[
               styles.iconContainer,
-              { backgroundColor: `${VARIANT_COLORS[variant]}20` },
+              { backgroundColor: `${variantColor}20` },
             ]}
           >
-            <Text style={styles.icon}>{VARIANT_ICONS[variant]}</Text>
+            {icon ?? <Text style={styles.icon}>{VARIANT_ICONS[variant]}</Text>}
           </View>
 
           {/* Title */}
@@ -158,7 +170,6 @@ export function Alert({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: spacing.xl,

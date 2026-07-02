@@ -2,7 +2,7 @@
  * Sistema de Toast/Notificaciones para feedback visual
  */
 
-import React, { createContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import {
   View,
   Text,
@@ -32,11 +32,16 @@ export interface ToastContextType {
 
 export const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
+/** Contexto interno para que ToastItem resuelva los íconos configurados en el provider. */
+const ToastIconsContext = createContext<Partial<Record<ToastType, ReactNode>>>({});
+
 interface ToastProviderProps {
   children: ReactNode;
+  /** Íconos a usar en vez del emoji por defecto (ej. de @expo/vector-icons), por tipo de toast. */
+  icons?: Partial<Record<ToastType, ReactNode>>;
 }
 
-export function ToastProvider({ children }: ToastProviderProps) {
+export function ToastProvider({ children, icons = {} }: ToastProviderProps) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const showToast = useCallback(
@@ -62,8 +67,10 @@ export function ToastProvider({ children }: ToastProviderProps) {
 
   return (
     <ToastContext.Provider value={{ showToast, hideToast }}>
-      {children}
-      <ToastContainer toasts={toasts} onHide={hideToast} />
+      <ToastIconsContext.Provider value={icons}>
+        {children}
+        <ToastContainer toasts={toasts} onHide={hideToast} />
+      </ToastIconsContext.Provider>
     </ToastContext.Provider>
   );
 }
@@ -93,6 +100,7 @@ interface ToastItemProps {
 
 function ToastItem({ toast, onHide }: ToastItemProps) {
   const { theme, isDark } = useTheme();
+  const icons = useContext(ToastIconsContext);
   const [animation] = useState(new Animated.Value(0));
 
   React.useEffect(() => {
@@ -131,6 +139,7 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
   };
 
   const { backgroundColor, emoji } = getToastColors();
+  const icon = icons[toast.type];
 
   const translateY = animation.interpolate({
     inputRange: [0, 1],
@@ -149,7 +158,7 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
         },
       ]}
     >
-      <Text style={styles.emoji}>{emoji}</Text>
+      {icon ?? <Text style={styles.emoji}>{emoji}</Text>}
       <Text style={styles.message}>{toast.message}</Text>
       <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
         <Text style={styles.closeText}>✕</Text>

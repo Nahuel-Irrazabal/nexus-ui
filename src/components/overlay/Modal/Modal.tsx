@@ -75,7 +75,7 @@ export function Modal({
         </View>
       ) : (
         <Pressable
-          style={styles.backdrop}
+          style={[styles.backdrop, { backgroundColor: theme.overlay }]}
           onPress={handleBackdropPress}
         >
           <Pressable
@@ -188,7 +188,6 @@ Modal.Footer = function ModalFooter({ children, style }: ModalFooterProps) {
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
