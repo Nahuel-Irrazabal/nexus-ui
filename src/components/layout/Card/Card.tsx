@@ -4,13 +4,15 @@
  */
 
 import React, { ReactNode } from 'react';
-import { 
-  View, 
-  Pressable, 
-  StyleSheet, 
-  Image, 
+import {
+  View,
+  Pressable,
+  StyleSheet,
+  Image,
   ImageSourcePropType,
   ViewStyle,
+  ImageStyle,
+  StyleProp,
   PressableProps,
   Text,
 } from 'react-native';
@@ -26,7 +28,7 @@ export interface CardProps extends Omit<PressableProps, 'style'> {
   children: ReactNode;
   variant?: CardVariant;
   padding?: keyof typeof spacing | 'none';
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface CardComposition {
@@ -103,7 +105,7 @@ export const Card: React.FC<CardProps> & CardComposition = ({
 export interface CardImageProps {
   source: ImageSourcePropType;
   aspectRatio?: number;
-  style?: any; // ImageStyle with aspectRatio
+  style?: StyleProp<ImageStyle>;
 }
 
 function CardImage({ source, aspectRatio = 16 / 9, style }: CardImageProps) {
@@ -114,7 +116,7 @@ function CardImage({ source, aspectRatio = 16 / 9, style }: CardImageProps) {
         styles.image,
         { aspectRatio },
         style,
-      ] as any}
+      ]}
       resizeMode="cover"
     />
   );
@@ -122,7 +124,7 @@ function CardImage({ source, aspectRatio = 16 / 9, style }: CardImageProps) {
 
 export interface CardContentProps {
   children: ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 function CardContent({ children, style }: CardContentProps) {
@@ -175,7 +177,7 @@ function CardDescription({ children, numberOfLines = 3 }: CardDescriptionProps) 
 
 export interface CardActionsProps {
   children: ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 function CardActions({ children, style }: CardActionsProps) {

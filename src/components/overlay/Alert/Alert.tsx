@@ -12,6 +12,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
@@ -36,7 +37,7 @@ export interface AlertProps {
   /** Ícono a mostrar en vez del emoji por defecto (ej. un ícono de @expo/vector-icons). */
   icon?: ReactNode;
   buttons?: AlertButton[];
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   testID?: string;
 }
 

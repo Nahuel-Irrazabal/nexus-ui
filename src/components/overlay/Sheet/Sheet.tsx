@@ -12,6 +12,7 @@ import {
   Dimensions,
   StyleSheet,
   ViewStyle,
+  StyleProp,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../../hooks/useTheme';
@@ -26,7 +27,7 @@ export interface SheetProps {
   onClose: () => void;
   dismissible?: boolean;
   children?: ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   testID?: string;
 }
 

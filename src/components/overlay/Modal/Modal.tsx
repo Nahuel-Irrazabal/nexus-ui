@@ -14,6 +14,7 @@ import {
   Pressable,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
@@ -29,7 +30,7 @@ export interface ModalProps {
   dismissible?: boolean;
   animationType?: AnimationType;
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
@@ -100,7 +101,7 @@ export function Modal({
 // Modal subcomponents
 interface ModalHeaderProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 Modal.Header = function ModalHeader({ children, style }: ModalHeaderProps) {
@@ -115,7 +116,7 @@ Modal.Header = function ModalHeader({ children, style }: ModalHeaderProps) {
 
 interface ModalTitleProps {
   children: React.ReactNode;
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
 }
 
 Modal.Title = function ModalTitle({ children, style }: ModalTitleProps) {
@@ -148,7 +149,7 @@ Modal.CloseButton = function ModalCloseButton({ onPress }: ModalCloseButtonProps
 interface ModalContentProps {
   children: React.ReactNode;
   scrollable?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 Modal.Content = function ModalContent({ children, scrollable = false, style }: ModalContentProps) {
@@ -172,7 +173,7 @@ Modal.Content = function ModalContent({ children, scrollable = false, style }: M
 
 interface ModalFooterProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 Modal.Footer = function ModalFooter({ children, style }: ModalFooterProps) {

@@ -11,6 +11,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
@@ -23,8 +24,8 @@ export interface RadioButtonProps {
   onSelect?: (value: string) => void;
   disabled?: boolean;
   size?: 'small' | 'medium' | 'large';
-  style?: ViewStyle;
-  labelStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
   testID?: string;
 }
 
@@ -125,7 +126,7 @@ interface RadioGroupProps {
   error?: string;
   direction?: 'vertical' | 'horizontal';
   children: React.ReactElement<RadioItemProps>[];
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface RadioItemProps {

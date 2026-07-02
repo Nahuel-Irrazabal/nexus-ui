@@ -12,6 +12,7 @@ import {
   ImageSourcePropType,
   TouchableOpacity,
   ViewStyle,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
@@ -27,7 +28,7 @@ export interface AvatarProps {
   badge?: React.ReactNode;
   onPress?: () => void;
   shape?: AvatarShape;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
@@ -140,7 +141,7 @@ interface AvatarGroupProps {
   max?: number;
   size?: AvatarSize;
   spacing?: number;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function AvatarGroup({

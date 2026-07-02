@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated, ViewStyle } from 'react-native';
+import { View, StyleSheet, Animated, ViewStyle, StyleProp } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { borderRadius as radiusTokens } from '../../../tokens/borderRadius';
 
@@ -17,7 +17,7 @@ export interface SkeletonLoaderProps {
   width?: number | `${number}%`;
   height?: number;
   borderRadius?: number;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function SkeletonLoader({

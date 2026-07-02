@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
@@ -20,9 +21,9 @@ export interface EmptyStateProps {
   title: string;
   description?: string;
   action?: React.ReactNode;
-  style?: ViewStyle;
-  titleStyle?: TextStyle;
-  descriptionStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  titleStyle?: StyleProp<TextStyle>;
+  descriptionStyle?: StyleProp<TextStyle>;
   testID?: string;
 }
 

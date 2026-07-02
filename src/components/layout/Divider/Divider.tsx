@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing as spacingTokens } from '../../../tokens/spacing';
@@ -22,8 +23,8 @@ export interface DividerProps {
   spacing?: keyof typeof spacingTokens;
   thickness?: number;
   color?: string;
-  style?: ViewStyle;
-  labelStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
   testID?: string;
 }
 

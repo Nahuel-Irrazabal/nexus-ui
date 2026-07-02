@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   ViewStyle,
   TextStyle,
+  StyleProp,
   TouchableOpacityProps,
   View,
 } from 'react-native';
@@ -31,8 +32,8 @@ export interface ButtonProps extends TouchableOpacityProps {
   icon?: React.ReactNode;
   iconPosition?: IconPosition;
   iconOnly?: boolean;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }
 
 export function Button({

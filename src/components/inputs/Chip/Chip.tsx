@@ -11,6 +11,7 @@ import {
   StyleSheet,
   ScrollView,
   ViewStyle,
+  StyleProp,
   PressableProps,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
@@ -26,7 +27,7 @@ export interface ChipProps extends Omit<PressableProps, 'style'> {
   icon?: ReactNode;
   disabled?: boolean;
   size?: ChipSize;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
@@ -94,7 +95,7 @@ export function Chip({
 export interface ChipGroupProps {
   children: ReactNode;
   scrollable?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function ChipGroup({ children, scrollable = false, style }: ChipGroupProps) {

@@ -11,6 +11,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
@@ -29,13 +30,13 @@ export interface CheckboxProps {
   /** Radio de las esquinas del cuadro. Por defecto borderRadius.sm (4). */
   borderRadius?: number;
   /** Estilos del ícono de check (✓). Por ejemplo fontSize, color, fontWeight. */
-  checkStyle?: TextStyle;
+  checkStyle?: StyleProp<TextStyle>;
   /** Estilos del contenedor del check (alineación, etc.). */
-  checkContainerStyle?: ViewStyle;
+  checkContainerStyle?: StyleProp<ViewStyle>;
   /** Estilos de la línea en estado indeterminado. */
-  indeterminateLineStyle?: ViewStyle;
-  style?: ViewStyle;
-  labelStyle?: TextStyle;
+  indeterminateLineStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
   testID?: string;
 }
 
@@ -164,7 +165,7 @@ interface CheckboxGroupProps {
   children: React.ReactElement<CheckboxItemProps>[];
   /** Props que se aplican a cada Checkbox del grupo (color, size, checkStyle, etc.). */
   checkboxProps?: Omit<Partial<CheckboxProps>, 'value' | 'onChange' | 'label'>;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface CheckboxItemProps {

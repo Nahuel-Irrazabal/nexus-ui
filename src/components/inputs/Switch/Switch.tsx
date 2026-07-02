@@ -12,6 +12,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
@@ -26,9 +27,9 @@ export interface SwitchProps {
   disabled?: boolean;
   loading?: boolean;
   size?: 'small' | 'medium' | 'large';
-  style?: ViewStyle;
-  labelStyle?: TextStyle;
-  descriptionStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
+  descriptionStyle?: StyleProp<TextStyle>;
   testID?: string;
 }
 

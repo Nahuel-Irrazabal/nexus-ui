@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
@@ -24,9 +25,9 @@ export interface ErrorStateProps {
   icon?: React.ReactNode;
   onRetry?: () => void;
   retryLabel?: string;
-  style?: ViewStyle;
-  titleStyle?: TextStyle;
-  descriptionStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  titleStyle?: StyleProp<TextStyle>;
+  descriptionStyle?: StyleProp<TextStyle>;
   testID?: string;
 }
 

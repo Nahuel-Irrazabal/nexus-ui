@@ -10,6 +10,7 @@ import {
   StyleSheet, 
   PressableProps,
   ViewStyle,
+  StyleProp,
   Text,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
@@ -30,7 +31,7 @@ export interface ListItemProps extends Omit<PressableProps, 'style'> {
   badge?: ReactNode;
   multiline?: boolean;
   divider?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function ListItem({

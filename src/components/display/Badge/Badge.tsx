@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { borderRadius as radiusTokens } from '../../../tokens/borderRadius';
@@ -27,8 +28,8 @@ export interface BadgeProps {
   /** Radio de las esquinas. Si no se pasa, se usa el valor según variant/dot. */
   borderRadius?: number;
   children?: React.ReactNode;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   showZero?: boolean;
   testID?: string;
 }
