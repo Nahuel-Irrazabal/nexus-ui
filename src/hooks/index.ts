@@ -4,6 +4,7 @@
 
 export * from './useTheme';
 export * from './useToast';
+export * from './useAlert';
 export * from './useDebounce';
 export * from './useAsync';
 export * from './usePrevious';
