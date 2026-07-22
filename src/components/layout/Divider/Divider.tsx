@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing as spacingTokens } from '../../../tokens/spacing';
+import { fontSizes, fontWeights } from '../../../tokens/typography';
 
 type DividerOrientation = 'horizontal' | 'vertical';
 
@@ -28,7 +29,7 @@ export interface DividerProps {
   testID?: string;
 }
 
-export function Divider({
+function DividerComponent({
   orientation = 'horizontal',
   label,
   spacing,
@@ -55,6 +56,7 @@ export function Divider({
           style,
         ]}
         testID={testID}
+        role="separator"
       />
     );
   }
@@ -71,6 +73,8 @@ export function Divider({
           style,
         ]}
         testID={testID}
+        role="separator"
+        accessibilityLabel={label}
       >
         <View
           style={[
@@ -117,9 +121,16 @@ export function Divider({
         style,
       ]}
       testID={testID}
+      role="separator"
     />
   );
 }
+
+/**
+ * Línea separadora horizontal o vertical con soporte para etiquetas.
+ */
+export const Divider = React.memo(DividerComponent);
+Divider.displayName = 'Divider';
 
 const styles = StyleSheet.create({
   horizontal: {
@@ -138,8 +149,7 @@ const styles = StyleSheet.create({
   },
   label: {
     marginHorizontal: 12,
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: fontSizes.md,
+    fontWeight: fontWeights.medium,
   },
 });
-

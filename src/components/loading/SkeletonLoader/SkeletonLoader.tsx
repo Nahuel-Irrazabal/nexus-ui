@@ -18,17 +18,19 @@ export interface SkeletonLoaderProps {
   height?: number;
   borderRadius?: number;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
-export function SkeletonLoader({
+function SkeletonLoaderBase({
   variant = 'text',
   animation = 'pulse',
   width,
   height,
   borderRadius,
   style,
+  testID,
 }: SkeletonLoaderProps) {
-  const { theme, isDark } = useTheme();
+  const { theme } = useTheme();
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -105,11 +107,19 @@ export function SkeletonLoader({
     outputRange: [-200, 200],
   });
 
-  const skeletonColor = isDark ? '#2A2A2A' : '#E0E0E0';
-  const waveColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.3)';
+  const skeletonColor = theme.skeletonBase;
+  const waveColor = theme.skeletonHighlight;
 
   return (
-    <View style={[styles.container, getVariantStyles(), style]}>
+    <View
+      testID={testID}
+      style={[styles.container, getVariantStyles(), style]}
+      // Decorativo: el skeleton no aporta información al lector de pantalla,
+      // por lo que se oculta del árbol de accesibilidad en vez de anunciar
+      // placeholders vacíos.
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+    >
       <Animated.View
         style={[
           styles.skeleton,
@@ -133,6 +143,9 @@ export function SkeletonLoader({
     </View>
   );
 }
+
+export const SkeletonLoader = React.memo(SkeletonLoaderBase);
+SkeletonLoader.displayName = 'SkeletonLoader';
 
 const styles = StyleSheet.create({
   container: {

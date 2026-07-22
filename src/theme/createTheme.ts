@@ -53,7 +53,8 @@ export const defaultLightTheme = {
   primary: palette.blue[500],
   primaryLight: palette.blue[300],
   primaryDark: palette.blue[700],
-  
+  onPrimary: palette.neutral[0],
+
   secondary: palette.purple[500],
   secondaryLight: palette.purple[300],
   secondaryDark: palette.purple[700],
@@ -76,7 +77,10 @@ export const defaultLightTheme = {
   
   shadow: 'rgba(0, 0, 0, 0.1)',
   overlay: 'rgba(0, 0, 0, 0.5)',
-  
+
+  skeletonBase: palette.neutral[300],
+  skeletonHighlight: 'rgba(255, 255, 255, 0.3)',
+
   // Componentes (Input, Text, etc.)
   components: { input: defaultInputTheme, text: defaultTextTheme },
 } as const;
@@ -85,7 +89,8 @@ export const defaultDarkTheme = {
   primary: palette.blue[400],
   primaryLight: palette.blue[300],
   primaryDark: palette.blue[600],
-  
+  onPrimary: palette.neutral[0],
+
   secondary: palette.purple[400],
   secondaryLight: palette.purple[300],
   secondaryDark: palette.purple[600],
@@ -108,7 +113,10 @@ export const defaultDarkTheme = {
   
   shadow: 'rgba(0, 0, 0, 0.4)',
   overlay: 'rgba(0, 0, 0, 0.7)',
-  
+
+  skeletonBase: '#2A2A2A',
+  skeletonHighlight: 'rgba(255, 255, 255, 0.1)',
+
   // Componentes (Input, Text, etc.)
   components: { input: defaultInputTheme, text: defaultTextTheme },
 } as const;
@@ -117,7 +125,9 @@ export interface Theme {
   primary: string;
   primaryLight: string;
   primaryDark: string;
-  
+  /** Color de contraste sobre `primary` (texto/íconos encima del color primario) */
+  onPrimary: string;
+
   secondary: string;
   secondaryLight: string;
   secondaryDark: string;
@@ -140,7 +150,12 @@ export interface Theme {
   
   shadow: string;
   overlay: string;
-  
+
+  /** Gris neutro para el placeholder del skeleton (no es un color "sólido" de fondo/borde) */
+  skeletonBase: string;
+  /** Highlight translúcido para la animación wave del skeleton */
+  skeletonHighlight: string;
+
   /** Estilos de componentes (Input, etc.) opcionales */
   components?: ThemeComponents;
 }

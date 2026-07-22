@@ -3,7 +3,7 @@
  * Muestra un estado vacío con icono, título, descripción y acción opcional
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
+import { fontSizes } from '../../../tokens/typography';
 
 export interface EmptyStateProps {
   icon?: React.ReactNode;
@@ -25,9 +26,11 @@ export interface EmptyStateProps {
   titleStyle?: StyleProp<TextStyle>;
   descriptionStyle?: StyleProp<TextStyle>;
   testID?: string;
+  /** Label de accesibilidad del contenedor. Por defecto usa `title`. */
+  accessibilityLabel?: string;
 }
 
-export function EmptyState({
+function EmptyStateBase({
   icon,
   illustration,
   title,
@@ -37,11 +40,18 @@ export function EmptyState({
   titleStyle,
   descriptionStyle,
   testID,
+  accessibilityLabel,
 }: EmptyStateProps) {
   const { theme } = useTheme();
 
   return (
-    <View style={[styles.container, style]} testID={testID}>
+    <View
+      style={[styles.container, style]}
+      testID={testID}
+      accessible
+      accessibilityRole="text"
+      accessibilityLabel={accessibilityLabel ?? title}
+    >
       {/* Illustration o Icon */}
       {illustration && (
         <View style={styles.illustrationContainer}>
@@ -93,6 +103,9 @@ export function EmptyState({
   );
 }
 
+export const EmptyState = memo(EmptyStateBase);
+EmptyState.displayName = 'EmptyState';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -108,13 +121,13 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   title: {
-    fontSize: 20,
+    fontSize: fontSizes.xxl,
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: spacing.sm,
   },
   description: {
-    fontSize: 14,
+    fontSize: fontSizes.md,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: spacing.lg,

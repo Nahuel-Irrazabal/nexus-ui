@@ -3,7 +3,7 @@
  * Toggle switch estilizado con soporte para labels y loading state
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { forwardRef, memo, useEffect, useRef } from 'react';
 import {
   TouchableOpacity,
   View,
@@ -18,6 +18,7 @@ import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius } from '../../../tokens/borderRadius';
 import { getShadow } from '../../../tokens/shadows';
+import { fontSizes } from '../../../tokens/typography';
 
 export interface SwitchProps {
   value: boolean;
@@ -31,6 +32,8 @@ export interface SwitchProps {
   labelStyle?: StyleProp<TextStyle>;
   descriptionStyle?: StyleProp<TextStyle>;
   testID?: string;
+  /** Label de accesibilidad. Si no se pasa, se usa `label`. */
+  accessibilityLabel?: string;
 }
 
 const SWITCH_SIZES = {
@@ -51,19 +54,23 @@ const SWITCH_SIZES = {
   },
 };
 
-export function Switch({
-  value,
-  onChange,
-  label,
-  description,
-  disabled = false,
-  loading = false,
-  size = 'medium',
-  style,
-  labelStyle,
-  descriptionStyle,
-  testID,
-}: SwitchProps) {
+function SwitchBase(
+  {
+    value,
+    onChange,
+    label,
+    description,
+    disabled = false,
+    loading = false,
+    size = 'medium',
+    style,
+    labelStyle,
+    descriptionStyle,
+    testID,
+    accessibilityLabel,
+  }: SwitchProps,
+  ref: React.ForwardedRef<React.ElementRef<typeof TouchableOpacity>>
+) {
   const { theme, isDark } = useTheme();
   const { width, height, thumbSize } = SWITCH_SIZES[size];
   const translateX = useRef(new Animated.Value(value ? 1 : 0)).current;
@@ -84,12 +91,12 @@ export function Switch({
 
   const getTrackColor = () => {
     if (disabled) {
-      return '#e5e7eb';
+      return theme.surfaceVariant;
     }
     if (value) {
       return theme.primary;
     }
-    return '#d1d5db';
+    return theme.border;
   };
 
   const thumbTranslateX = translateX.interpolate({
@@ -100,10 +107,14 @@ export function Switch({
   return (
     <View style={[styles.container, style]} testID={testID}>
       <TouchableOpacity
+        ref={ref}
         style={styles.row}
         onPress={handlePress}
         disabled={disabled || loading}
         activeOpacity={0.7}
+        accessibilityRole="switch"
+        accessibilityState={{ checked: value, disabled: disabled || loading }}
+        accessibilityLabel={accessibilityLabel ?? label}
       >
         <View
           style={[
@@ -122,6 +133,7 @@ export function Switch({
               {
                 width: thumbSize,
                 height: thumbSize,
+                backgroundColor: theme.onPrimary,
                 transform: [{ translateX: thumbTranslateX }],
                 ...getShadow('sm', isDark),
               },
@@ -142,7 +154,7 @@ export function Switch({
                 style={[
                   styles.label,
                   {
-                    color: disabled ? '#9ca3af' : theme.text,
+                    color: disabled ? theme.textDisabled : theme.text,
                   },
                   labelStyle,
                 ]}
@@ -155,7 +167,7 @@ export function Switch({
                 style={[
                   styles.description,
                   {
-                    color: disabled ? '#d1d5db' : theme.textSecondary,
+                    color: disabled ? theme.textDisabled : theme.textSecondary,
                   },
                   descriptionStyle,
                 ]}
@@ -169,6 +181,9 @@ export function Switch({
     </View>
   );
 }
+
+export const Switch = memo(forwardRef(SwitchBase));
+Switch.displayName = 'Switch';
 
 const styles = StyleSheet.create({
   container: {
@@ -184,7 +199,6 @@ const styles = StyleSheet.create({
   },
   thumb: {
     borderRadius: borderRadius.full,
-    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -197,12 +211,11 @@ const styles = StyleSheet.create({
     marginLeft: spacing.sm,
   },
   label: {
-    fontSize: 15,
+    fontSize: fontSizes.md,
     fontWeight: '500',
   },
   description: {
-    fontSize: 13,
+    fontSize: fontSizes.sm,
     marginTop: 2,
   },
 });
-

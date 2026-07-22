@@ -15,10 +15,12 @@ import {
   ViewStyle,
   TextStyle,
   StyleProp,
+  DimensionValue,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius } from '../../../tokens/borderRadius';
+import { fontSizes } from '../../../tokens/typography';
 
 type ModalSize = 'small' | 'medium' | 'large' | 'fullscreen';
 type AnimationType = 'fade' | 'slide' | 'none';
@@ -34,14 +36,14 @@ export interface ModalProps {
   testID?: string;
 }
 
-const MODAL_SIZES = {
+const MODAL_SIZES: Record<ModalSize, DimensionValue> = {
   small: '70%',
   medium: '85%',
   large: '95%',
   fullscreen: '100%',
 };
 
-export function Modal({
+function ModalBase({
   visible,
   onClose,
   size = 'medium',
@@ -71,7 +73,10 @@ export function Modal({
       testID={testID}
     >
       {isFullscreen ? (
-        <View style={[styles.fullscreenContainer, { backgroundColor: theme.background }, style]}>
+        <View
+          style={[styles.fullscreenContainer, { backgroundColor: theme.background }, style]}
+          accessibilityViewIsModal
+        >
           {children}
         </View>
       ) : (
@@ -89,6 +94,7 @@ export function Modal({
               style,
             ]}
             onPress={(e) => e.stopPropagation()}
+            accessibilityViewIsModal
           >
             {children}
           </Pressable>
@@ -98,13 +104,28 @@ export function Modal({
   );
 }
 
+ModalBase.displayName = 'Modal';
+
+interface ModalComposition {
+  Header: typeof ModalHeader;
+  Title: typeof ModalTitle;
+  CloseButton: typeof ModalCloseButton;
+  Content: typeof ModalContent;
+  Footer: typeof ModalFooter;
+}
+
+type ModalComponent = React.MemoExoticComponent<typeof ModalBase> & ModalComposition;
+
+export const Modal = React.memo(ModalBase) as ModalComponent;
+Modal.displayName = 'Modal';
+
 // Modal subcomponents
 interface ModalHeaderProps {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-Modal.Header = function ModalHeader({ children, style }: ModalHeaderProps) {
+const ModalHeader = React.memo(function ModalHeader({ children, style }: ModalHeaderProps) {
   const { theme } = useTheme();
 
   return (
@@ -112,14 +133,15 @@ Modal.Header = function ModalHeader({ children, style }: ModalHeaderProps) {
       {children}
     </View>
   );
-};
+});
+ModalHeader.displayName = 'ModalHeader';
 
 interface ModalTitleProps {
   children: React.ReactNode;
   style?: StyleProp<TextStyle>;
 }
 
-Modal.Title = function ModalTitle({ children, style }: ModalTitleProps) {
+const ModalTitle = React.memo(function ModalTitle({ children, style }: ModalTitleProps) {
   const { theme } = useTheme();
 
   return (
@@ -127,24 +149,33 @@ Modal.Title = function ModalTitle({ children, style }: ModalTitleProps) {
       {children}
     </Text>
   );
-};
+});
+ModalTitle.displayName = 'ModalTitle';
 
 interface ModalCloseButtonProps {
   onPress?: () => void;
+  /** Label de accesibilidad del botón de cierre. Por defecto 'Cerrar'. */
+  accessibilityLabel?: string;
 }
 
-Modal.CloseButton = function ModalCloseButton({ onPress }: ModalCloseButtonProps) {
+const ModalCloseButton = React.memo(function ModalCloseButton({
+  onPress,
+  accessibilityLabel = 'Cerrar',
+}: ModalCloseButtonProps) {
   const { theme } = useTheme();
 
   return (
     <TouchableOpacity
       onPress={onPress}
       style={styles.closeButton}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
     >
-      <Text style={{ fontSize: 24, color: theme.textSecondary }}>×</Text>
+      <Text style={{ fontSize: fontSizes.xxxl, color: theme.textSecondary }}>×</Text>
     </TouchableOpacity>
   );
-};
+});
+ModalCloseButton.displayName = 'ModalCloseButton';
 
 interface ModalContentProps {
   children: React.ReactNode;
@@ -152,7 +183,7 @@ interface ModalContentProps {
   style?: StyleProp<ViewStyle>;
 }
 
-Modal.Content = function ModalContent({ children, scrollable = false, style }: ModalContentProps) {
+const ModalContent = React.memo(function ModalContent({ children, scrollable = false, style }: ModalContentProps) {
   if (scrollable) {
     return (
       <ScrollView
@@ -169,14 +200,15 @@ Modal.Content = function ModalContent({ children, scrollable = false, style }: M
       {children}
     </View>
   );
-};
+});
+ModalContent.displayName = 'ModalContent';
 
 interface ModalFooterProps {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-Modal.Footer = function ModalFooter({ children, style }: ModalFooterProps) {
+const ModalFooter = React.memo(function ModalFooter({ children, style }: ModalFooterProps) {
   const { theme } = useTheme();
 
   return (
@@ -184,7 +216,15 @@ Modal.Footer = function ModalFooter({ children, style }: ModalFooterProps) {
       {children}
     </View>
   );
-};
+});
+ModalFooter.displayName = 'ModalFooter';
+
+// Asignar sub-componentes
+Modal.Header = ModalHeader;
+Modal.Title = ModalTitle;
+Modal.CloseButton = ModalCloseButton;
+Modal.Content = ModalContent;
+Modal.Footer = ModalFooter;
 
 const styles = StyleSheet.create({
   backdrop: {
@@ -208,7 +248,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   title: {
-    fontSize: 20,
+    fontSize: fontSizes.xxl,
     fontWeight: '600',
     flex: 1,
   },

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/nexus-ui/main/assets/logo.png" alt="Nexus UI Logo" width="120" height="120" />
+  <img src="https://raw.githubusercontent.com/Nahuel-Irrazabal/nexus-ui/main/assets/logo.png" alt="Nexus UI Logo" width="120" height="120" />
 </p>
 
 <h1 align="center">⚛️ Nexus UI</h1>
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.0.0-blue.svg" alt="Version" />
+  <img src="https://img.shields.io/badge/version-2.2.0-blue.svg" alt="Version" />
   <img src="https://img.shields.io/badge/react--native-%3E%3D0.72-brightgreen.svg" alt="React Native" />
   <img src="https://img.shields.io/badge/typescript-strict-blue.svg" alt="TypeScript" />
   <img src="https://img.shields.io/badge/license-private-red.svg" alt="License" />
@@ -33,11 +33,11 @@
 ```
 ╔══════════════════════════════════════════════════════════════════╗
 ║                                                                  ║
-║   🎨  27+ Componentes    │   🌓  Light/Dark Mode Automático     ║
+║   🎨  21 Componentes     │   🌓  Light/Dark Mode Automático     ║
 ║                          │                                       ║
 ║   📏  Design Tokens      │   🔧  3 Niveles de Personalización   ║
 ║                          │                                       ║
-║   🪝  7 Custom Hooks     │   📱  iOS + Android                  ║
+║   🪝  8 Custom Hooks     │   📱  iOS + Android                  ║
 ║                          │                                       ║
 ║   🧪  Tests con Jest     │   📘  TypeScript Estricto            ║
 ║                                                                  ║
@@ -50,7 +50,7 @@
 
 | Feature | Descripción |
 |---------|-------------|
-| **🧩 Componentes Modulares** | 27+ componentes organizados en 10 categorías, listos para producción |
+| **🧩 Componentes Modulares** | 21 componentes organizados en 10 categorías, listos para producción |
 | **🎨 Design Tokens** | Sistema completo de tokens para colores, espaciado, tipografía, sombras y más |
 | **🌓 Temas Dinámicos** | Soporte para Light/Dark mode con auto-detección del sistema |
 | **⚡ Alto Rendimiento** | Componentes optimizados con animaciones nativas |
@@ -67,7 +67,7 @@
 npm install file:../packages/nexus-ui
 
 # O desde GitHub (rama main; no se publican versiones a npm)
-npm install github:TU_USUARIO/nexus-ui
+npm install github:Nahuel-Irrazabal/nexus-ui
 
 # Peer dependencies requeridas
 npm install react-native-safe-area-context @react-native-async-storage/async-storage
@@ -79,7 +79,7 @@ Por lo general solo se hace **push a `main`** sin publicar versiones. Para que u
 
 | Origen | Cómo actualizar |
 |--------|------------------|
-| **GitHub** (`"nexus-ui": "github:Usuario/nexus-ui"`) | En el proyecto: `npm update nexus-ui` o `npm install github:Usuario/nexus-ui#main`. Si no actualiza, borrar `node_modules/nexus-ui` y volver a `npm install`. |
+| **GitHub** (`"nexus-ui": "github:Nahuel-Irrazabal/nexus-ui"`) | En el proyecto: `npm update nexus-ui` o `npm install github:Nahuel-Irrazabal/nexus-ui#main`. Si no actualiza, borrar `node_modules/nexus-ui` y volver a `npm install`. |
 | **Monorepo** (`"nexus-ui": "file:../packages/nexus-ui"`) | En el proyecto: `npm install` (o `npm update nexus-ui`). El paquete apunta a la carpeta local; con `npm install` se refresca el link/copia. |
 
 ```bash
@@ -153,7 +153,9 @@ function LoginScreen() {
 
 ## 🧩 Componentes
 
-Nexus UI incluye **29+ componentes** organizados en **10 categorías**:
+Nexus UI incluye **21 componentes** organizados en **10 categorías**:
+
+> **Nota:** Los 20 componentes principales siguen la estructura `src/components/<categoría>/<Componente>/`. `ErrorBoundary` es una utilidad ubicada en `src/utils/components/` que no sigue esta convención.
 
 ### 📐 Layout
 

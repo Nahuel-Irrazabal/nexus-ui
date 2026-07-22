@@ -3,7 +3,7 @@
  * Muestra un estado de error con mensaje y opción de reintentar
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius } from '../../../tokens/borderRadius';
+import { fontSizes } from '../../../tokens/typography';
+import { palette } from '../../../tokens/colors';
 import { Button } from '../../buttons';
 
 export interface ErrorStateProps {
@@ -29,9 +31,11 @@ export interface ErrorStateProps {
   titleStyle?: StyleProp<TextStyle>;
   descriptionStyle?: StyleProp<TextStyle>;
   testID?: string;
+  /** Label de accesibilidad del contenedor. Por defecto usa `title`. */
+  accessibilityLabel?: string;
 }
 
-export function ErrorState({
+function ErrorStateBase({
   error,
   title = 'Algo salió mal',
   description,
@@ -43,38 +47,47 @@ export function ErrorState({
   titleStyle,
   descriptionStyle,
   testID,
+  accessibilityLabel,
 }: ErrorStateProps) {
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
 
   // Extraer mensaje del error si es un objeto Error
   const errorMessage = error instanceof Error ? error.message : error;
   const displayDescription = description || errorMessage || 'Ocurrió un error inesperado. Por favor, intenta de nuevo.';
 
+  // NOTA: el Theme actual no tiene un token semántico "errorContainer" (fondo suave
+  // dark-mode aware para superficies de error). Se usa un tinte de palette.red según
+  // isDark como stopgap tokenizado en vez del literal '#fef2f2' hardcodeado.
+  // Ver unresolved en la entrega de este fix.
+  const errorContainerColor = isDark ? palette.red[900] : palette.red[50];
+
   // Icono de error por defecto si no se proporciona illustration ni icon
   const defaultIcon = (
     <View
-      style={{
-        width: 64,
-        height: 64,
-        borderRadius: borderRadius.full,
-        backgroundColor: '#fef2f2',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
+      style={[
+        styles.iconCircle,
+        { backgroundColor: errorContainerColor },
+      ]}
     >
-      <Text style={{ fontSize: 32 }}>⚠️</Text>
+      <Text style={styles.iconEmoji}>⚠️</Text>
     </View>
   );
 
   return (
-    <View style={[styles.container, style]} testID={testID}>
+    <View
+      style={[styles.container, style]}
+      testID={testID}
+      accessible
+      accessibilityRole="alert"
+      accessibilityLabel={accessibilityLabel ?? title}
+    >
       {/* Illustration o Icon */}
       {illustration && (
         <View style={styles.illustrationContainer}>
           {illustration}
         </View>
       )}
-      
+
       {!illustration && (icon || defaultIcon) && (
         <View style={styles.iconContainer}>
           {icon || defaultIcon}
@@ -121,6 +134,9 @@ export function ErrorState({
   );
 }
 
+export const ErrorState = memo(ErrorStateBase);
+ErrorState.displayName = 'ErrorState';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -134,14 +150,24 @@ const styles = StyleSheet.create({
   iconContainer: {
     marginBottom: spacing.lg,
   },
+  iconCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: borderRadius.full,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconEmoji: {
+    fontSize: fontSizes.display1,
+  },
   title: {
-    fontSize: 20,
+    fontSize: fontSizes.xxl,
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: spacing.sm,
   },
   description: {
-    fontSize: 14,
+    fontSize: fontSizes.md,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: spacing.lg,
@@ -152,4 +178,3 @@ const styles = StyleSheet.create({
     minWidth: 140,
   },
 });
-

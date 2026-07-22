@@ -39,14 +39,16 @@ interface CardComposition {
   Actions: typeof CardActions;
 }
 
-export const Card: React.FC<CardProps> & CardComposition = ({
+const CardBase = React.forwardRef<View, CardProps>(({
   children,
   variant = 'elevated',
   padding = 'none',
   onPress,
   style,
+  accessibilityRole,
+  testID,
   ...props
-}) => {
+}, ref) => {
   const { theme, isDark } = useTheme();
 
   const getVariantStyles = (): ViewStyle => {
@@ -79,8 +81,11 @@ export const Card: React.FC<CardProps> & CardComposition = ({
   if (onPress) {
     return (
       <Pressable
+        ref={ref}
         {...props}
+        testID={testID}
         onPress={onPress}
+        accessibilityRole={accessibilityRole ?? 'button'}
         style={({ pressed }) => [
           styles.card,
           cardStyle,
@@ -94,11 +99,23 @@ export const Card: React.FC<CardProps> & CardComposition = ({
   }
 
   return (
-    <View style={[styles.card, cardStyle, style]}>
+    <View
+      ref={ref}
+      testID={testID}
+      accessibilityRole={accessibilityRole}
+      style={[styles.card, cardStyle, style]}
+    >
       {children}
     </View>
   );
-};
+});
+
+CardBase.displayName = 'Card';
+
+type CardComponent = React.MemoExoticComponent<typeof CardBase> & CardComposition;
+
+export const Card = React.memo(CardBase) as CardComponent;
+Card.displayName = 'Card';
 
 // Sub-componentes
 
@@ -108,7 +125,7 @@ export interface CardImageProps {
   style?: StyleProp<ImageStyle>;
 }
 
-function CardImage({ source, aspectRatio = 16 / 9, style }: CardImageProps) {
+const CardImage = React.memo(function CardImage({ source, aspectRatio = 16 / 9, style }: CardImageProps) {
   return (
     <Image
       source={source}
@@ -120,27 +137,29 @@ function CardImage({ source, aspectRatio = 16 / 9, style }: CardImageProps) {
       resizeMode="cover"
     />
   );
-}
+});
+CardImage.displayName = 'CardImage';
 
 export interface CardContentProps {
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-function CardContent({ children, style }: CardContentProps) {
+const CardContent = React.memo(function CardContent({ children, style }: CardContentProps) {
   return (
     <View style={[styles.content, style]}>
       {children}
     </View>
   );
-}
+});
+CardContent.displayName = 'CardContent';
 
 export interface CardTitleProps {
   children: ReactNode;
   numberOfLines?: number;
 }
 
-function CardTitle({ children, numberOfLines = 2 }: CardTitleProps) {
+const CardTitle = React.memo(function CardTitle({ children, numberOfLines = 2 }: CardTitleProps) {
   const { theme } = useTheme();
   return (
     <Text
@@ -153,14 +172,15 @@ function CardTitle({ children, numberOfLines = 2 }: CardTitleProps) {
       {children}
     </Text>
   );
-}
+});
+CardTitle.displayName = 'CardTitle';
 
 export interface CardDescriptionProps {
   children: ReactNode;
   numberOfLines?: number;
 }
 
-function CardDescription({ children, numberOfLines = 3 }: CardDescriptionProps) {
+const CardDescription = React.memo(function CardDescription({ children, numberOfLines = 3 }: CardDescriptionProps) {
   const { theme } = useTheme();
   return (
     <Text
@@ -173,20 +193,22 @@ function CardDescription({ children, numberOfLines = 3 }: CardDescriptionProps) 
       {children}
     </Text>
   );
-}
+});
+CardDescription.displayName = 'CardDescription';
 
 export interface CardActionsProps {
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-function CardActions({ children, style }: CardActionsProps) {
+const CardActions = React.memo(function CardActions({ children, style }: CardActionsProps) {
   return (
     <View style={[styles.actions, style]}>
       {children}
     </View>
   );
-}
+});
+CardActions.displayName = 'CardActions';
 
 // Asignar sub-componentes
 Card.Image = CardImage;

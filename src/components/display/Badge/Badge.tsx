@@ -3,7 +3,7 @@
  * Indicador numérico o de estado que se puede usar solo o como wrapper
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { borderRadius as radiusTokens } from '../../../tokens/borderRadius';
+import { fontSizes } from '../../../tokens/typography';
 
 type BadgeVariant = 'rounded' | 'square' | 'dot';
 type BadgeColor = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
@@ -31,10 +32,12 @@ export interface BadgeProps {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   showZero?: boolean;
+  /** Etiqueta de accesibilidad. Si no se pasa, se infiere de label/count. */
+  accessibilityLabel?: string;
   testID?: string;
 }
 
-export function Badge({
+function BadgeComponent({
   count = 0,
   max = 99,
   dot = false,
@@ -46,6 +49,7 @@ export function Badge({
   style,
   textStyle,
   showZero = false,
+  accessibilityLabel,
   testID,
 }: BadgeProps) {
   const { theme } = useTheme();
@@ -61,6 +65,9 @@ export function Badge({
   const displayCount = count > max ? `${max}+` : count.toString();
   const displayText = hasLabel ? label : displayCount;
 
+  const resolvedAccessibilityLabel = accessibilityLabel ?? (dot ? undefined : displayText);
+  const isAccessible = dot ? Boolean(resolvedAccessibilityLabel) : shouldShow;
+
   const defaultRadius = dot
     ? radiusTokens.sm
     : { rounded: radiusTokens.full, square: radiusTokens.xs, dot: radiusTokens.sm }[variant];
@@ -72,6 +79,7 @@ export function Badge({
         styles.badge,
         {
           backgroundColor,
+          borderColor: theme.onPrimary,
           borderRadius,
           minWidth: dot ? 8 : hasLabel ? undefined : 18,
           height: dot ? 8 : 18,
@@ -81,14 +89,17 @@ export function Badge({
         style,
       ]}
       testID={testID}
+      accessible={isAccessible}
+      accessibilityRole={isAccessible ? (dot ? 'image' : 'text') : undefined}
+      accessibilityLabel={resolvedAccessibilityLabel}
     >
       {!dot && shouldShow && (
         <Text
           style={[
             styles.text,
             {
-              color: '#ffffff',
-              fontSize: 10,
+              color: theme.onPrimary,
+              fontSize: fontSizes.xs,
               fontWeight: '600',
             },
             textStyle,
@@ -116,6 +127,9 @@ export function Badge({
   return badgeContent;
 }
 
+export const Badge = memo(BadgeComponent);
+Badge.displayName = 'Badge';
+
 const styles = StyleSheet.create({
   wrapper: {
     position: 'relative',
@@ -125,7 +139,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#ffffff',
   },
   standalone: {
     alignSelf: 'flex-start',
@@ -141,4 +154,3 @@ const styles = StyleSheet.create({
     lineHeight: 14,
   },
 });
-

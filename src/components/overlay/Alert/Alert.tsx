@@ -3,7 +3,7 @@
  * Diálogo de alerta simple para confirmaciones
  */
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode, memo } from 'react';
 import {
   Modal,
   View,
@@ -17,6 +17,7 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius } from '../../../tokens/borderRadius';
+import { fontSizes } from '../../../tokens/typography';
 import { ThemeWithCustomColors } from '../../../theme/createTheme';
 
 type AlertVariant = 'info' | 'success' | 'warning' | 'destructive';
@@ -62,7 +63,7 @@ function getVariantColor(variant: AlertVariant, theme: ThemeWithCustomColors): s
   }
 }
 
-export function Alert({
+function AlertComponent({
   visible,
   onClose,
   title,
@@ -106,6 +107,7 @@ export function Alert({
     >
       <View style={[styles.backdrop, { backgroundColor: theme.overlay }]}>
         <View
+          accessibilityViewIsModal
           style={[
             styles.container,
             { backgroundColor: theme.surface },
@@ -140,6 +142,8 @@ export function Alert({
               <TouchableOpacity
                 key={index}
                 onPress={() => handleButtonPress(button)}
+                accessibilityRole="button"
+                accessibilityLabel={button.text}
                 style={[
                   styles.button,
                   {
@@ -168,6 +172,9 @@ export function Alert({
   );
 }
 
+export const Alert = memo(AlertComponent);
+Alert.displayName = 'Alert';
+
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
@@ -191,16 +198,16 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   icon: {
-    fontSize: 28,
+    fontSize: fontSizes.xxxl,
   },
   title: {
-    fontSize: 18,
+    fontSize: fontSizes.xl,
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: spacing.sm,
   },
   message: {
-    fontSize: 14,
+    fontSize: fontSizes.md,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: spacing.lg,
@@ -220,7 +227,6 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: fontSizes.lg,
   },
 });
-

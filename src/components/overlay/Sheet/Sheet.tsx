@@ -29,15 +29,17 @@ export interface SheetProps {
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
   testID?: string;
+  dismissLabel?: string;
 }
 
-export function Sheet({
+function SheetComponent({
   visible,
   onClose,
   dismissible = true,
   children,
   style,
   testID,
+  dismissLabel = 'Cerrar',
 }: SheetProps) {
   const { theme, isDark } = useTheme();
   const insets = useSafeAreaInsets();
@@ -82,7 +84,12 @@ export function Sheet({
       onRequestClose={dismissible ? onClose : undefined}
       testID={testID}
     >
-      <Pressable style={[styles.backdrop, { backgroundColor: theme.overlay }]} onPress={handleBackdropPress}>
+      <Pressable
+        style={[styles.backdrop, { backgroundColor: theme.overlay }]}
+        onPress={handleBackdropPress}
+        accessibilityRole={dismissible ? 'button' : undefined}
+        accessibilityLabel={dismissible ? dismissLabel : undefined}
+      >
         <Animated.View
           style={[styles.sheetWrapper, { transform: [{ translateY }] }]}
         >
@@ -94,8 +101,13 @@ export function Sheet({
               style,
             ]}
             onPress={(e) => e.stopPropagation()}
+            accessibilityViewIsModal
           >
-            <View style={[styles.handle, { backgroundColor: theme.border }]} />
+            <View
+              style={[styles.handle, { backgroundColor: theme.border }]}
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
+            />
             {children}
           </Pressable>
         </Animated.View>
@@ -103,6 +115,9 @@ export function Sheet({
     </RNModal>
   );
 }
+
+export const Sheet = React.memo(SheetComponent);
+Sheet.displayName = 'Sheet';
 
 const styles = StyleSheet.create({
   backdrop: {

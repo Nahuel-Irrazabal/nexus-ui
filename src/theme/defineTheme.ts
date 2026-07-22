@@ -22,6 +22,7 @@ export interface DefineThemeColors {
   primary?: string;
   primaryLight?: string;
   primaryDark?: string;
+  onPrimary?: string;
   
   // Colores secundarios
   secondary?: string;
@@ -51,7 +52,10 @@ export interface DefineThemeColors {
   // Efectos
   shadow?: string;
   overlay?: string;
-  
+
+  skeletonBase?: string;
+  skeletonHighlight?: string;
+
   /** Estilos de componentes (Input, etc.) opcionales */
   components?: ThemeComponents;
 
@@ -135,9 +139,10 @@ export function defineTheme(config: {
     : defaultDarkTheme.components;
 
   const knownThemeKeys = new Set([
-    'primary', 'primaryLight', 'primaryDark', 'secondary', 'secondaryLight', 'secondaryDark',
+    'primary', 'primaryLight', 'primaryDark', 'onPrimary', 'secondary', 'secondaryLight', 'secondaryDark',
     'background', 'surface', 'surfaceVariant', 'text', 'textSecondary', 'textDisabled',
-    'border', 'divider', 'success', 'error', 'warning', 'info', 'shadow', 'overlay', 'components',
+    'border', 'divider', 'success', 'error', 'warning', 'info', 'shadow', 'overlay',
+    'skeletonBase', 'skeletonHighlight', 'components',
   ]);
 
   const lightTheme: Theme = {
@@ -145,6 +150,7 @@ export function defineTheme(config: {
     primary: config.light.primary || defaultLightTheme.primary,
     primaryLight: config.light.primaryLight || defaultLightTheme.primaryLight,
     primaryDark: config.light.primaryDark || defaultLightTheme.primaryDark,
+    onPrimary: config.light.onPrimary || defaultLightTheme.onPrimary,
     
     // Secundarios
     secondary: config.light.secondary || defaultLightTheme.secondary,
@@ -174,7 +180,10 @@ export function defineTheme(config: {
     // Efectos
     shadow: config.light.shadow || defaultLightTheme.shadow,
     overlay: config.light.overlay || defaultLightTheme.overlay,
-    
+
+    skeletonBase: config.light.skeletonBase || defaultLightTheme.skeletonBase,
+    skeletonHighlight: config.light.skeletonHighlight || defaultLightTheme.skeletonHighlight,
+
     // Componentes
     components: lightComponents,
   };
@@ -192,6 +201,7 @@ export function defineTheme(config: {
     primary: config.dark.primary || defaultDarkTheme.primary,
     primaryLight: config.dark.primaryLight || defaultDarkTheme.primaryLight,
     primaryDark: config.dark.primaryDark || defaultDarkTheme.primaryDark,
+    onPrimary: config.dark.onPrimary || defaultDarkTheme.onPrimary,
     
     // Secundarios
     secondary: config.dark.secondary || defaultDarkTheme.secondary,
@@ -221,7 +231,10 @@ export function defineTheme(config: {
     // Efectos
     shadow: config.dark.shadow || defaultDarkTheme.shadow,
     overlay: config.dark.overlay || defaultDarkTheme.overlay,
-    
+
+    skeletonBase: config.dark.skeletonBase || defaultDarkTheme.skeletonBase,
+    skeletonHighlight: config.dark.skeletonHighlight || defaultDarkTheme.skeletonHighlight,
+
     // Componentes
     components: darkComponents,
   };

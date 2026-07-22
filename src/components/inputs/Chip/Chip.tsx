@@ -3,7 +3,7 @@
  * Etiqueta seleccionable compacta — filtros, selección simple o múltiple
  */
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode, forwardRef, memo } from 'react';
 import {
   Pressable,
   Text,
@@ -36,16 +36,20 @@ const CHIP_PADDING: Record<ChipSize, { vertical: number; horizontal: number }> =
   medium: { vertical: spacing.xs, horizontal: spacing.md },
 };
 
-export function Chip({
-  label,
-  selected = false,
-  icon,
-  disabled = false,
-  size = 'medium',
-  style,
-  testID,
-  ...props
-}: ChipProps) {
+const ChipBase = forwardRef<View, ChipProps>(function Chip(
+  {
+    label,
+    selected = false,
+    icon,
+    disabled = false,
+    size = 'medium',
+    style,
+    testID,
+    accessibilityLabel,
+    ...props
+  },
+  ref
+) {
   const { theme } = useTheme();
   const padding = CHIP_PADDING[size];
 
@@ -55,14 +59,16 @@ export function Chip({
       ? theme.primary
       : theme.surfaceVariant;
   const borderColor = disabled ? theme.border : selected ? theme.primary : theme.border;
-  const textColor = disabled ? theme.textDisabled : selected ? '#fff' : theme.text;
+  const textColor = disabled ? theme.textDisabled : selected ? theme.onPrimary : theme.text;
 
   return (
     <Pressable
       {...props}
+      ref={ref}
       disabled={disabled}
       accessibilityRole="button"
       accessibilityState={{ selected, disabled }}
+      accessibilityLabel={accessibilityLabel ?? label}
       testID={testID}
       style={({ pressed }) => [
         styles.chip,
@@ -90,7 +96,11 @@ export function Chip({
       </Text>
     </Pressable>
   );
-}
+});
+
+/** Etiqueta seleccionable compacta — filtros, selección simple o múltiple. */
+export const Chip = memo(ChipBase);
+Chip.displayName = 'Chip';
 
 export interface ChipGroupProps {
   children: ReactNode;
@@ -98,7 +108,7 @@ export interface ChipGroupProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function ChipGroup({ children, scrollable = false, style }: ChipGroupProps) {
+function ChipGroupBase({ children, scrollable = false, style }: ChipGroupProps) {
   if (scrollable) {
     return (
       <ScrollView
@@ -113,6 +123,9 @@ export function ChipGroup({ children, scrollable = false, style }: ChipGroupProp
 
   return <View style={[styles.group, styles.groupWrap, style]}>{children}</View>;
 }
+
+export const ChipGroup = memo(ChipGroupBase);
+ChipGroup.displayName = 'ChipGroup';
 
 const styles = StyleSheet.create({
   chip: {

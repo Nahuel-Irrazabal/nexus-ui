@@ -1,5 +1,5 @@
 /**
- * Jest Configuration para @nexus-ui/design-system
+ * Jest Configuration para nexus-ui
  */
 
 module.exports = {
