@@ -3,6 +3,12 @@
  * Configuración global para tests
  */
 
+// React Native inyecta este global via Metro/babel-plugin-transform-define en
+// runtime real. En el entorno de test (sin preset react-native) no existe, y
+// cualquier componente que lo referencie (ej. ErrorBoundary) revienta con
+// "__DEV__ is not defined" apenas se lo renderiza.
+global.__DEV__ = true;
+
 // Mock AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () => ({
   setItem: jest.fn(() => Promise.resolve()),
