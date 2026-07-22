@@ -19,12 +19,6 @@ import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius } from '../../../tokens/borderRadius';
 import { fontSizes } from '../../../tokens/typography';
-import { palette } from '../../../tokens/colors';
-
-// NOTA: el Theme actual no tiene un token semántico de "texto sobre fondo primario"
-// (p.ej. onPrimary/contrastText). Se usa palette.neutral[0] como stopgap tokenizado
-// en vez del literal '#fff' hardcodeado. Ver unresolved en la entrega de este fix.
-const ON_PRIMARY_FALLBACK = palette.neutral[0];
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 type ButtonSize = 'small' | 'medium' | 'large';
@@ -96,12 +90,12 @@ function ButtonBase(
       case 'primary':
       case 'secondary':
       case 'danger':
-        return ON_PRIMARY_FALLBACK;
+        return theme.onPrimary;
       case 'outline':
       case 'ghost':
         return theme.primary;
       default:
-        return ON_PRIMARY_FALLBACK;
+        return theme.onPrimary;
     }
   };
 

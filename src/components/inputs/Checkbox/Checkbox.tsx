@@ -87,11 +87,9 @@ export const Checkbox = React.memo(
         ? theme.border
         : (color ?? (checked ? theme.primary : theme.border));
     const borderRadius = borderRadiusProp ?? radiusTokens.sm;
-    // NOTA: el theme actual no expone un token de "contraste sobre color" (onPrimary/contrastText).
-    // Se usa theme.background como color válido más cercano hasta que se agregue ese token al
-    // design system (ver unresolved en la entrega). Antes acá se leía theme.textContrast, que
-    // tampoco existe en Theme y resolvía a undefined (bug original).
-    const iconColor = disabled ? theme.textDisabled : theme.background;
+    // Color del check sobre el fondo primario. (Antes se leía theme.textContrast,
+    // inexistente en Theme → undefined; bug original corregido con el token onPrimary.)
+    const iconColor = disabled ? theme.textDisabled : theme.onPrimary;
 
     return (
       <View style={[styles.container, style]} testID={testID}>

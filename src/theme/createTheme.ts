@@ -53,7 +53,8 @@ export const defaultLightTheme = {
   primary: palette.blue[500],
   primaryLight: palette.blue[300],
   primaryDark: palette.blue[700],
-  
+  onPrimary: palette.neutral[0],
+
   secondary: palette.purple[500],
   secondaryLight: palette.purple[300],
   secondaryDark: palette.purple[700],
@@ -85,7 +86,8 @@ export const defaultDarkTheme = {
   primary: palette.blue[400],
   primaryLight: palette.blue[300],
   primaryDark: palette.blue[600],
-  
+  onPrimary: palette.neutral[0],
+
   secondary: palette.purple[400],
   secondaryLight: palette.purple[300],
   secondaryDark: palette.purple[600],
@@ -117,7 +119,9 @@ export interface Theme {
   primary: string;
   primaryLight: string;
   primaryDark: string;
-  
+  /** Color de contraste sobre `primary` (texto/íconos encima del color primario) */
+  onPrimary: string;
+
   secondary: string;
   secondaryLight: string;
   secondaryDark: string;

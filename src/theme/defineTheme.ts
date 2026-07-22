@@ -22,6 +22,7 @@ export interface DefineThemeColors {
   primary?: string;
   primaryLight?: string;
   primaryDark?: string;
+  onPrimary?: string;
   
   // Colores secundarios
   secondary?: string;
@@ -135,7 +136,7 @@ export function defineTheme(config: {
     : defaultDarkTheme.components;
 
   const knownThemeKeys = new Set([
-    'primary', 'primaryLight', 'primaryDark', 'secondary', 'secondaryLight', 'secondaryDark',
+    'primary', 'primaryLight', 'primaryDark', 'onPrimary', 'secondary', 'secondaryLight', 'secondaryDark',
     'background', 'surface', 'surfaceVariant', 'text', 'textSecondary', 'textDisabled',
     'border', 'divider', 'success', 'error', 'warning', 'info', 'shadow', 'overlay', 'components',
   ]);
@@ -145,6 +146,7 @@ export function defineTheme(config: {
     primary: config.light.primary || defaultLightTheme.primary,
     primaryLight: config.light.primaryLight || defaultLightTheme.primaryLight,
     primaryDark: config.light.primaryDark || defaultLightTheme.primaryDark,
+    onPrimary: config.light.onPrimary || defaultLightTheme.onPrimary,
     
     // Secundarios
     secondary: config.light.secondary || defaultLightTheme.secondary,
@@ -192,6 +194,7 @@ export function defineTheme(config: {
     primary: config.dark.primary || defaultDarkTheme.primary,
     primaryLight: config.dark.primaryLight || defaultDarkTheme.primaryLight,
     primaryDark: config.dark.primaryDark || defaultDarkTheme.primaryDark,
+    onPrimary: config.dark.onPrimary || defaultDarkTheme.onPrimary,
     
     // Secundarios
     secondary: config.dark.secondary || defaultDarkTheme.secondary,
