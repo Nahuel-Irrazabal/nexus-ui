@@ -43,13 +43,28 @@ export const ToastContext = createContext<ToastContextType | undefined>(undefine
 /** Contexto interno para que ToastItem resuelva los íconos configurados en el provider. */
 const ToastIconsContext = createContext<Partial<Record<ToastType, ReactNode>>>({});
 
-interface ToastProviderProps {
+/** Label de a11y por defecto del botón de cierre, usado si el provider no pasa uno propio. */
+const DEFAULT_CLOSE_ACCESSIBILITY_LABEL = 'Cerrar notificación';
+
+/** Contexto interno para que ToastItem resuelva el accessibilityLabel del botón de cierre configurado en el provider. */
+const ToastCloseLabelContext = createContext<string | undefined>(undefined);
+
+export interface ToastProviderProps {
   children: ReactNode;
   /** Íconos a usar en vez del emoji por defecto (ej. de @expo/vector-icons), por tipo de toast. */
   icons?: Partial<Record<ToastType, ReactNode>>;
+  /**
+   * `accessibilityLabel` del botón de cierre de cada toast. Override para i18n u otro copy.
+   * @default 'Cerrar notificación'
+   */
+  closeAccessibilityLabel?: string;
 }
 
-export const ToastProvider = memo(function ToastProvider({ children, icons = {} }: ToastProviderProps) {
+export const ToastProvider = memo(function ToastProvider({
+  children,
+  icons = {},
+  closeAccessibilityLabel,
+}: ToastProviderProps) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const showToast = useCallback(
@@ -76,8 +91,10 @@ export const ToastProvider = memo(function ToastProvider({ children, icons = {} 
   return (
     <ToastContext.Provider value={{ showToast, hideToast }}>
       <ToastIconsContext.Provider value={icons}>
-        {children}
-        <ToastContainer toasts={toasts} onHide={hideToast} />
+        <ToastCloseLabelContext.Provider value={closeAccessibilityLabel}>
+          {children}
+          <ToastContainer toasts={toasts} onHide={hideToast} />
+        </ToastCloseLabelContext.Provider>
       </ToastIconsContext.Provider>
     </ToastContext.Provider>
   );
@@ -117,6 +134,8 @@ interface ToastItemProps {
 const ToastItem = memo(function ToastItem({ toast, onHide }: ToastItemProps) {
   const { theme, isDark } = useTheme();
   const icons = useContext(ToastIconsContext);
+  const closeAccessibilityLabel =
+    useContext(ToastCloseLabelContext) ?? DEFAULT_CLOSE_ACCESSIBILITY_LABEL;
   const [animation] = useState(new Animated.Value(0));
 
   React.useEffect(() => {
@@ -182,7 +201,7 @@ const ToastItem = memo(function ToastItem({ toast, onHide }: ToastItemProps) {
         onPress={handleClose}
         style={styles.closeButton}
         accessibilityRole="button"
-        accessibilityLabel="Close notification"
+        accessibilityLabel={closeAccessibilityLabel}
       >
         <Text style={[styles.closeText, { color: ON_COLOR_FALLBACK }]}>✕</Text>
       </TouchableOpacity>

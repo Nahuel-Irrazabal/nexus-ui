@@ -101,6 +101,53 @@ describe('Checkbox', () => {
     expect(flattened.color).toBe(defaultLightTheme.background);
   });
 
+  it('con un color custom claro, recalcula el color del check por contraste en vez de usar theme.onPrimary a ciegas', () => {
+    const { getByText } = renderWithTheme(
+      <Checkbox value={true} onChange={jest.fn()} label="Checked" color="yellow" />
+    );
+
+    const checkmark = getByText('✓');
+    const flattened = flattenStyle(checkmark.props.style);
+
+    // yellow es un fondo claro: el check debe quedar oscuro para ser visible,
+    // no theme.onPrimary (calibrado para fondo primario, no para "yellow").
+    expect(flattened.color).toBe('#000000');
+    expect(flattened.color).not.toBe(defaultLightTheme.onPrimary);
+  });
+
+  it('con un color custom oscuro, recalcula el color del check a blanco por contraste', () => {
+    const { getByText } = renderWithTheme(
+      <Checkbox value={true} onChange={jest.fn()} label="Checked" color="#000080" />
+    );
+
+    const checkmark = getByText('✓');
+    const flattened = flattenStyle(checkmark.props.style);
+
+    expect(flattened.color).toBe('#FFFFFF');
+  });
+
+  it('con un color custom no parseable, cae de vuelta a theme.onPrimary sin crashear', () => {
+    const { getByText } = renderWithTheme(
+      <Checkbox value={true} onChange={jest.fn()} label="Checked" color="hsl(0, 100%, 50%)" />
+    );
+
+    const checkmark = getByText('✓');
+    const flattened = flattenStyle(checkmark.props.style);
+
+    expect(flattened.color).toBe(defaultLightTheme.onPrimary);
+  });
+
+  it('sin color custom, mantiene el comportamiento default (theme.onPrimary)', () => {
+    const { getByText } = renderWithTheme(
+      <Checkbox value={true} onChange={jest.fn()} label="Checked" />
+    );
+
+    const checkmark = getByText('✓');
+    const flattened = flattenStyle(checkmark.props.style);
+
+    expect(flattened.color).toBe(defaultLightTheme.onPrimary);
+  });
+
   it('resuelve el color de la línea indeterminada a theme.textDisabled cuando disabled, nunca a undefined', () => {
     const { UNSAFE_getAllByProps } = renderWithTheme(
       <Checkbox value={false} onChange={jest.fn()} indeterminate disabled />

@@ -17,6 +17,7 @@ import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius as radiusTokens } from '../../../tokens/borderRadius';
 import { fontSizes, fontWeights } from '../../../tokens/typography';
+import { getContrastColor } from '../../../utils/color';
 
 export interface CheckboxProps {
   label?: string;
@@ -87,9 +88,17 @@ export const Checkbox = React.memo(
         ? theme.border
         : (color ?? (checked ? theme.primary : theme.border));
     const borderRadius = borderRadiusProp ?? radiusTokens.sm;
-    // Color del check sobre el fondo primario. (Antes se leía theme.textContrast,
-    // inexistente en Theme → undefined; bug original corregido con el token onPrimary.)
-    const iconColor = disabled ? theme.textDisabled : theme.onPrimary;
+    // Color del check sobre el fondo. theme.onPrimary está calibrado para dar
+    // contraste sobre theme.primary, no sobre un `color` custom arbitrario:
+    // si el consumidor pasa `color`, el fondo del checkbox es ese color (ver
+    // checkedColor arriba), así que el check se recalcula por luminancia en
+    // vez de asumir onPrimary a ciegas. Sin `color` custom, comportamiento
+    // sin cambios (theme.onPrimary).
+    const iconColor = disabled
+      ? theme.textDisabled
+      : color
+        ? getContrastColor(color, theme.onPrimary)
+        : theme.onPrimary;
 
     return (
       <View style={[styles.container, style]} testID={testID}>

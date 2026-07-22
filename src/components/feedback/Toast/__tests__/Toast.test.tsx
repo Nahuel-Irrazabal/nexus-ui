@@ -122,9 +122,27 @@ describe('Toast', () => {
 
     it('el botón de cierre expone accessibilityRole="button" y un label', () => {
       const { getByLabelText } = renderToast('Con botón de cierre');
-      const closeButton = getByLabelText('Close notification');
+      const closeButton = getByLabelText('Cerrar notificación');
       expect(closeButton.props.accessibilityRole).toBe('button');
       expect(closeButton.props.accessibilityLabel).toBeTruthy();
+    });
+
+    it('el botón de cierre usa "Cerrar notificación" por defecto si el provider no pasa override', () => {
+      const { getByLabelText } = renderToast('Sin override de label');
+      expect(getByLabelText('Cerrar notificación')).toBeTruthy();
+    });
+
+    it('permite overridear el accessibilityLabel del botón de cierre via closeAccessibilityLabel', () => {
+      const { getByLabelText, queryByLabelText } = render(
+        <ThemeProvider>
+          <ToastProvider closeAccessibilityLabel="Dismiss alert">
+            <ToastTrigger message="Con label custom" />
+          </ToastProvider>
+        </ThemeProvider>
+      );
+
+      expect(getByLabelText('Dismiss alert')).toBeTruthy();
+      expect(queryByLabelText('Cerrar notificación')).toBeNull();
     });
   });
 
@@ -134,7 +152,7 @@ describe('Toast', () => {
       expect(queryByText('Se puede cerrar')).toBeTruthy();
 
       act(() => {
-        fireEvent.press(getByLabelText('Close notification'));
+        fireEvent.press(getByLabelText('Cerrar notificación'));
       });
 
       expect(queryByText('Se puede cerrar')).toBeNull();

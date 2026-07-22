@@ -1,3 +1,3 @@
 export { ToastProvider, ToastContext } from './Toast';
-export type { ToastContextType, ToastType, Toast } from './Toast';
+export type { ToastContextType, ToastType, Toast, ToastProviderProps } from './Toast';
 

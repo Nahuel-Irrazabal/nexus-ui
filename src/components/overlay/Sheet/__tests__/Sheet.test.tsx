@@ -50,6 +50,29 @@ describe('Sheet', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('aplica un dismissLabel custom en lugar del default "Cerrar"', () => {
+    const onClose = jest.fn();
+    const { getByLabelText, queryByLabelText } = renderSheet(
+      <Sheet
+        visible
+        onClose={onClose}
+        dismissible
+        dismissLabel="Close sheet"
+        testID="sheet"
+      >
+        <Text>Contenido</Text>
+      </Sheet>
+    );
+
+    expect(queryByLabelText('Cerrar')).toBeNull();
+
+    const backdrop = getByLabelText('Close sheet');
+    expect(backdrop.props.accessibilityRole).toBe('button');
+
+    fireEvent.press(backdrop);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it('no expone el backdrop como control cuando dismissible=false', () => {
     const onClose = jest.fn();
     const { queryByLabelText, getByTestId } = renderSheet(

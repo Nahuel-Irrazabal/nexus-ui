@@ -29,6 +29,7 @@ export interface SheetProps {
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
   testID?: string;
+  dismissLabel?: string;
 }
 
 function SheetComponent({
@@ -38,6 +39,7 @@ function SheetComponent({
   children,
   style,
   testID,
+  dismissLabel = 'Cerrar',
 }: SheetProps) {
   const { theme, isDark } = useTheme();
   const insets = useSafeAreaInsets();
@@ -86,7 +88,7 @@ function SheetComponent({
         style={[styles.backdrop, { backgroundColor: theme.overlay }]}
         onPress={handleBackdropPress}
         accessibilityRole={dismissible ? 'button' : undefined}
-        accessibilityLabel={dismissible ? 'Cerrar' : undefined}
+        accessibilityLabel={dismissible ? dismissLabel : undefined}
       >
         <Animated.View
           style={[styles.sheetWrapper, { transform: [{ translateY }] }]}
