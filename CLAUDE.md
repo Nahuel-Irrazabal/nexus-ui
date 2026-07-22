@@ -33,13 +33,10 @@ src/components/<categoría>/<Componente>/
 Detalle completo y archivos de referencia: agente `nexus-expert` y `.claude/rules.md`.
 
 ## Backlog de calidad (estado vivo)
-Correr `/nexus-audit` para el reporte actualizado. Deuda conocida:
-1. **BUG** `Checkbox.tsx` lee `theme.textContrast` (no existe → `undefined`).
-2. Cero `memo`/`forwardRef`/`displayName` en la librería.
-3. A11y ausente salvo Checkbox/Chip.
-4. Tests solo smoke; `createTheme`/`defineTheme`/`ThemeProvider` sin cubrir; `coverageThreshold: 70%` no real.
-5. Button hardcodea `'#fff'` y font sizes 14/16/18.
-6. Drift de docs (README 2.0.0 vs package 2.1.0; nombre `@nexus-ui/design-system`).
+Correr `/nexus-audit` para el reporte actualizado. Última auditoría (2026-07-22): librería en buen estado, sin bugs funcionales ni riesgos altos abiertos. Deuda restante:
+1. `forwardRef` opcional en wrappers de `View`/overlay sin ref útil (`Badge`, `Divider`, `Modal`, `Sheet`, `Alert`, `Toast`, `EmptyState`, `ErrorState`, `SkeletonLoader/List`).
+2. `Input.tsx` sin `accessibilityRole` explícito (cosmético; RN lo infiere de `TextInput`).
+3. Cobertura real: 93.18% líneas / 90.64% branches (por encima del `coverageThreshold: 70%` declarado en `jest.config.js`, ahora real).
 
 ## Skills
 - `/nexus-add-component` — scaffold de componente nuevo con el template canónico (ya corregido).
