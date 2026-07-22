@@ -2,23 +2,6 @@
  * Chip Component Tests
  */
 
-// El mock global de jest.setup.js no expone `Pressable` (Chip lo necesita para renderizar).
-// Se sobreescribe acá, scopeado a este archivo, en vez de tocar el mock compartido de react-native.
-jest.mock('react-native', () => ({
-  View: 'View',
-  Text: 'Text',
-  Pressable: 'Pressable',
-  ScrollView: 'ScrollView',
-  StyleSheet: {
-    create: (styles: any) => styles,
-  },
-  useColorScheme: jest.fn(() => 'light'),
-  Platform: {
-    OS: 'ios',
-    select: (obj: any) => obj.ios ?? obj.default,
-  },
-}));
-
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { ScrollView } from 'react-native';
