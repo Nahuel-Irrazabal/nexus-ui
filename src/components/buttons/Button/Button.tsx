@@ -3,7 +3,7 @@
  * Botón personalizable con variantes, tamaños, estados e iconos
  */
 
-import React from 'react';
+import React, { forwardRef, memo } from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -18,6 +18,13 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius } from '../../../tokens/borderRadius';
+import { fontSizes } from '../../../tokens/typography';
+import { palette } from '../../../tokens/colors';
+
+// NOTA: el Theme actual no tiene un token semántico de "texto sobre fondo primario"
+// (p.ej. onPrimary/contrastText). Se usa palette.neutral[0] como stopgap tokenizado
+// en vez del literal '#fff' hardcodeado. Ver unresolved en la entrega de este fix.
+const ON_PRIMARY_FALLBACK = palette.neutral[0];
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 type ButtonSize = 'small' | 'medium' | 'large';
@@ -34,22 +41,28 @@ export interface ButtonProps extends TouchableOpacityProps {
   iconOnly?: boolean;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  /** Label de accesibilidad. Por defecto usa `title`. */
+  accessibilityLabel?: string;
 }
 
-export function Button({
-  title,
-  variant = 'primary',
-  size = 'medium',
-  loading = false,
-  fullWidth = false,
-  icon,
-  iconPosition = 'left',
-  iconOnly = false,
-  disabled,
-  style,
-  textStyle,
-  ...props
-}: ButtonProps) {
+function ButtonBase(
+  {
+    title,
+    variant = 'primary',
+    size = 'medium',
+    loading = false,
+    fullWidth = false,
+    icon,
+    iconPosition = 'left',
+    iconOnly = false,
+    disabled,
+    style,
+    textStyle,
+    accessibilityLabel,
+    ...props
+  }: ButtonProps,
+  ref: React.Ref<React.ElementRef<typeof TouchableOpacity>>
+) {
   const { theme } = useTheme();
 
   // Validación: si es iconOnly, debe tener un icon
@@ -59,7 +72,7 @@ export function Button({
 
   const getBackgroundColor = () => {
     if (disabled) return theme.border;
-    
+
     switch (variant) {
       case 'primary':
         return theme.primary;
@@ -78,17 +91,17 @@ export function Button({
 
   const getTextColor = () => {
     if (disabled) return theme.textDisabled;
-    
+
     switch (variant) {
       case 'primary':
       case 'secondary':
       case 'danger':
-        return '#fff';
+        return ON_PRIMARY_FALLBACK;
       case 'outline':
       case 'ghost':
         return theme.primary;
       default:
-        return '#fff';
+        return ON_PRIMARY_FALLBACK;
     }
   };
 
@@ -118,13 +131,13 @@ export function Button({
   const getFontSize = () => {
     switch (size) {
       case 'small':
-        return 14;
+        return fontSizes.md;
       case 'medium':
-        return 16;
+        return fontSizes.lg;
       case 'large':
-        return 18;
+        return fontSizes.xl;
       default:
-        return 16;
+        return fontSizes.lg;
     }
   };
 
@@ -184,7 +197,11 @@ export function Button({
   return (
     <TouchableOpacity
       {...props}
+      ref={ref}
       disabled={disabled || loading}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
+      accessibilityLabel={accessibilityLabel ?? title}
       style={[
         styles.button,
         {
@@ -203,6 +220,9 @@ export function Button({
     </TouchableOpacity>
   );
 }
+
+export const Button = memo(forwardRef(ButtonBase));
+Button.displayName = 'Button';
 
 const styles = StyleSheet.create({
   button: {
@@ -242,4 +262,3 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
 });
-

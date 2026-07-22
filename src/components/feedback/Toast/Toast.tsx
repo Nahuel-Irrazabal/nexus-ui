@@ -2,7 +2,7 @@
  * Sistema de Toast/Notificaciones para feedback visual
  */
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo, memo, ReactNode } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../../hooks/useTheme';
 import { borderRadius } from '../../../tokens/borderRadius';
 import { getShadow } from '../../../tokens/shadows';
+import { fontSizes } from '../../../tokens/typography';
+import { palette } from '../../../tokens/colors';
+
+// NOTA: el Theme actual no tiene un token semántico de "texto sobre fondo de color"
+// (p.ej. onPrimary/contrastText) — ver unresolved en la entrega de este fix. Se usa
+// palette.neutral[0] como stopgap tokenizado en vez del literal '#fff' hardcodeado,
+// mismo patrón que Button.tsx (ON_PRIMARY_FALLBACK).
+const ON_COLOR_FALLBACK = palette.neutral[0];
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -41,7 +49,7 @@ interface ToastProviderProps {
   icons?: Partial<Record<ToastType, ReactNode>>;
 }
 
-export function ToastProvider({ children, icons = {} }: ToastProviderProps) {
+export const ToastProvider = memo(function ToastProvider({ children, icons = {} }: ToastProviderProps) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const showToast = useCallback(
@@ -73,7 +81,9 @@ export function ToastProvider({ children, icons = {} }: ToastProviderProps) {
       </ToastIconsContext.Provider>
     </ToastContext.Provider>
   );
-}
+});
+
+ToastProvider.displayName = 'ToastProvider';
 
 // Componente interno para renderizar toasts
 interface ToastContainerProps {
@@ -81,24 +91,30 @@ interface ToastContainerProps {
   onHide: (id: string) => void;
 }
 
-function ToastContainer({ toasts, onHide }: ToastContainerProps) {
+const ToastContainer = memo(function ToastContainer({ toasts, onHide }: ToastContainerProps) {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, { top: insets.top + 8 }]} pointerEvents="box-none">
+    <View
+      style={[styles.container, { top: insets.top + 8 }]}
+      pointerEvents="box-none"
+      accessibilityLiveRegion="polite"
+    >
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} onHide={onHide} />
       ))}
     </View>
   );
-}
+});
+
+ToastContainer.displayName = 'ToastContainer';
 
 interface ToastItemProps {
   toast: Toast;
   onHide: (id: string) => void;
 }
 
-function ToastItem({ toast, onHide }: ToastItemProps) {
+const ToastItem = memo(function ToastItem({ toast, onHide }: ToastItemProps) {
   const { theme, isDark } = useTheme();
   const icons = useContext(ToastIconsContext);
   const [animation] = useState(new Animated.Value(0));
@@ -113,7 +129,7 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
     }).start();
   }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     // Animación de salida
     Animated.timing(animation, {
       toValue: 0,
@@ -122,9 +138,9 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
     }).start(() => {
       onHide(toast.id);
     });
-  };
+  }, [animation, onHide, toast.id]);
 
-  const getToastColors = () => {
+  const { backgroundColor, emoji } = useMemo(() => {
     switch (toast.type) {
       case 'success':
         return { backgroundColor: theme.success, emoji: '✅' };
@@ -136,9 +152,8 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
       default:
         return { backgroundColor: theme.info, emoji: 'ℹ️' };
     }
-  };
+  }, [theme, toast.type]);
 
-  const { backgroundColor, emoji } = getToastColors();
   const icon = icons[toast.type];
 
   const translateY = animation.interpolate({
@@ -157,15 +172,25 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
           ...getShadow('lg', isDark),
         },
       ]}
+      accessibilityRole="alert"
+      accessibilityLiveRegion="polite"
+      accessibilityLabel={toast.message}
     >
       {icon ?? <Text style={styles.emoji}>{emoji}</Text>}
-      <Text style={styles.message}>{toast.message}</Text>
-      <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-        <Text style={styles.closeText}>✕</Text>
+      <Text style={[styles.message, { color: ON_COLOR_FALLBACK }]}>{toast.message}</Text>
+      <TouchableOpacity
+        onPress={handleClose}
+        style={styles.closeButton}
+        accessibilityRole="button"
+        accessibilityLabel="Close notification"
+      >
+        <Text style={[styles.closeText, { color: ON_COLOR_FALLBACK }]}>✕</Text>
       </TouchableOpacity>
     </Animated.View>
   );
-}
+});
+
+ToastItem.displayName = 'ToastItem';
 
 const { width } = Dimensions.get('window');
 
@@ -188,21 +213,19 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
   },
   emoji: {
-    fontSize: 20,
+    fontSize: fontSizes.xxl,
     marginRight: 12,
   },
   message: {
     flex: 1,
-    color: '#fff',
-    fontSize: 14,
+    fontSize: fontSizes.md,
     fontWeight: '500',
   },
   closeButton: {
     padding: 4,
   },
   closeText: {
-    color: '#fff',
-    fontSize: 18,
+    fontSize: fontSizes.xl,
     fontWeight: 'bold',
   },
 });

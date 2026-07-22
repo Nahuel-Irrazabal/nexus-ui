@@ -16,6 +16,7 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius as radiusTokens } from '../../../tokens/borderRadius';
+import { fontSizes, fontWeights } from '../../../tokens/typography';
 
 export interface CheckboxProps {
   label?: string;
@@ -37,6 +38,8 @@ export interface CheckboxProps {
   indeterminateLineStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
+  /** Label para lectores de pantalla. Por defecto usa `label`; pasalo explícitamente si el checkbox no tiene `label` visible. */
+  accessibilityLabel?: string;
   testID?: string;
 }
 
@@ -46,115 +49,129 @@ const CHECKBOX_SIZES = {
   large: 26,
 };
 
-export function Checkbox({
-  label,
-  value,
-  onChange,
-  disabled = false,
-  indeterminate = false,
-  error,
-  size = 'medium',
-  color,
-  borderRadius: borderRadiusProp,
-  checkStyle,
-  checkContainerStyle,
-  indeterminateLineStyle,
-  style,
-  labelStyle,
-  testID,
-}: CheckboxProps) {
-  const { theme } = useTheme();
-  const checkboxSize = CHECKBOX_SIZES[size];
-  const checked = value || indeterminate;
-  const checkedColor = color ?? theme.primary;
+export const Checkbox = React.memo(
+  React.forwardRef<React.ElementRef<typeof TouchableOpacity>, CheckboxProps>(function Checkbox(
+    {
+      label,
+      value,
+      onChange,
+      disabled = false,
+      indeterminate = false,
+      error,
+      size = 'medium',
+      color,
+      borderRadius: borderRadiusProp,
+      checkStyle,
+      checkContainerStyle,
+      indeterminateLineStyle,
+      style,
+      labelStyle,
+      accessibilityLabel,
+      testID,
+    },
+    ref
+  ) {
+    const { theme } = useTheme();
+    const checkboxSize = CHECKBOX_SIZES[size];
+    const checked = value || indeterminate;
+    const checkedColor = color ?? theme.primary;
 
-  const handlePress = () => {
-    if (!disabled) onChange(!value);
-  };
+    const handlePress = () => {
+      if (!disabled) onChange(!value);
+    };
 
-  const backgroundColor = disabled ? theme.border : checked ? checkedColor : 'transparent';
-  const borderColor = error
-    ? theme.error
-    : disabled
-      ? theme.border
-      : (color ?? (checked ? theme.primary : theme.border));
-  const borderRadius = borderRadiusProp ?? radiusTokens.sm;
-  const iconColor = disabled ? theme.textDisabled : theme.textContrast;
+    const backgroundColor = disabled ? theme.border : checked ? checkedColor : 'transparent';
+    const borderColor = error
+      ? theme.error
+      : disabled
+        ? theme.border
+        : (color ?? (checked ? theme.primary : theme.border));
+    const borderRadius = borderRadiusProp ?? radiusTokens.sm;
+    // NOTA: el theme actual no expone un token de "contraste sobre color" (onPrimary/contrastText).
+    // Se usa theme.background como color válido más cercano hasta que se agregue ese token al
+    // design system (ver unresolved en la entrega). Antes acá se leía theme.textContrast, que
+    // tampoco existe en Theme y resolvía a undefined (bug original).
+    const iconColor = disabled ? theme.textDisabled : theme.background;
 
-  return (
-    <View style={[styles.container, style]} testID={testID}>
-      <TouchableOpacity
-        style={styles.row}
-        onPress={handlePress}
-        disabled={disabled}
-        activeOpacity={0.7}
-        accessibilityRole="checkbox"
-        accessibilityState={{ checked: value, disabled }}
-        accessibilityLabel={label ?? (value ? 'Marcado' : 'No marcado')}
-      >
-        <View
-          style={[
-            styles.checkbox,
-            {
-              width: checkboxSize,
-              height: checkboxSize,
-              borderRadius,
-              backgroundColor,
-              borderColor,
-              opacity: disabled ? 0.5 : 1,
-            },
-          ]}
+    return (
+      <View style={[styles.container, style]} testID={testID}>
+        <TouchableOpacity
+          ref={ref}
+          style={styles.row}
+          onPress={handlePress}
+          disabled={disabled}
+          activeOpacity={0.7}
+          accessible
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: value, disabled }}
+          accessibilityLabel={accessibilityLabel ?? label}
         >
-          {indeterminate && (
-            <View
-              style={[
-                styles.indeterminateLine,
-                {
-                  width: checkboxSize * 0.5,
-                  height: 2,
-                  backgroundColor: iconColor,
-                },
-                indeterminateLineStyle,
-              ]}
-            />
-          )}
-
-          {!indeterminate && value && (
-            <View style={[styles.checkmarkContainer, checkContainerStyle]}>
-              <Text
-                style={[
-                  styles.checkmark,
-                  { fontSize: checkboxSize * 0.7, color: iconColor },
-                  checkStyle,
-                ]}
-              >
-                ✓
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {label && (
-          <Text
+          <View
             style={[
-              styles.label,
-              { color: disabled ? theme.textDisabled : theme.text },
-              labelStyle,
+              styles.checkbox,
+              {
+                width: checkboxSize,
+                height: checkboxSize,
+                borderRadius,
+                backgroundColor,
+                borderColor,
+                opacity: disabled ? 0.5 : 1,
+              },
             ]}
           >
-            {label}
+            {indeterminate && (
+              <View
+                style={[
+                  styles.indeterminateLine,
+                  {
+                    width: checkboxSize * 0.5,
+                    height: 2,
+                    backgroundColor: iconColor,
+                  },
+                  indeterminateLineStyle,
+                ]}
+              />
+            )}
+
+            {!indeterminate && value && (
+              <View style={[styles.checkmarkContainer, checkContainerStyle]}>
+                <Text
+                  style={[
+                    styles.checkmark,
+                    { fontSize: checkboxSize * 0.7, color: iconColor },
+                    checkStyle,
+                  ]}
+                >
+                  ✓
+                </Text>
+              </View>
+            )}
+          </View>
+
+          {label && (
+            <Text
+              style={[
+                styles.label,
+                { color: disabled ? theme.textDisabled : theme.text },
+                labelStyle,
+              ]}
+            >
+              {label}
+            </Text>
+          )}
+        </TouchableOpacity>
+
+        {error && (
+          <Text style={[styles.error, { color: theme.error }]}>
+            {error}
           </Text>
         )}
-      </TouchableOpacity>
+      </View>
+    );
+  })
+);
 
-      {error && (
-        <Text style={[styles.error, { color: theme.error }]}>
-          {error}
-        </Text>
-      )}
-    </View>
-  );
-}
+Checkbox.displayName = 'Checkbox';
 
 // CheckboxGroup Component
 interface CheckboxGroupProps {
@@ -174,7 +191,7 @@ interface CheckboxItemProps {
   disabled?: boolean;
 }
 
-export function CheckboxGroup({
+export const CheckboxGroup = React.memo(function CheckboxGroup({
   value,
   onChange,
   label,
@@ -200,13 +217,13 @@ export function CheckboxGroup({
           {label}
         </Text>
       )}
-      
+
       <View>
         {React.Children.map(children, (child) => {
           if (!React.isValidElement<CheckboxItemProps>(child)) return null;
-          
+
           const isChecked = value.includes(child.props.value);
-          
+
           return (
             <Checkbox
               key={child.props.value}
@@ -227,7 +244,9 @@ export function CheckboxGroup({
       )}
     </View>
   );
-}
+});
+
+CheckboxGroup.displayName = 'CheckboxGroup';
 
 // CheckboxItem Component para uso con CheckboxGroup
 export function CheckboxItem(_props: CheckboxItemProps) {
@@ -235,6 +254,8 @@ export function CheckboxItem(_props: CheckboxItemProps) {
   // No renderiza nada por sí mismo
   return null;
 }
+
+CheckboxItem.displayName = 'CheckboxItem';
 
 const styles = StyleSheet.create({
   container: {
@@ -263,12 +284,12 @@ const styles = StyleSheet.create({
     borderRadius: radiusTokens.xs,
   },
   label: {
-    fontSize: 15,
+    fontSize: fontSizes.md,
     marginLeft: spacing.sm,
     flex: 1,
   },
   error: {
-    fontSize: 12,
+    fontSize: fontSizes.sm,
     marginTop: spacing.xs,
     marginLeft: spacing.sm + CHECKBOX_SIZES.medium, // Alinear con label (tamaño medio por defecto)
   },
@@ -276,9 +297,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   groupLabel: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: fontSizes.lg,
+    fontWeight: fontWeights.semibold,
     marginBottom: spacing.sm,
   },
 });
-

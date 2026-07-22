@@ -3,7 +3,7 @@
  * Renderiza múltiples skeletons en diferentes layouts predefinidos
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { SkeletonLoader } from './SkeletonLoader';
 import { spacing } from '../../../tokens/spacing';
@@ -15,12 +15,17 @@ export interface SkeletonListProps {
   items?: number;
   variant?: SkeletonListVariant;
   spacing?: keyof typeof spacing;
+  /** Label para lectores de pantalla. Por defecto no se anuncia texto, solo el estado busy. */
+  accessibilityLabel?: string;
+  testID?: string;
 }
 
-export function SkeletonList({
+function SkeletonListComponent({
   items = 3,
   variant = 'listItem',
   spacing: spacingValue = 'md',
+  accessibilityLabel,
+  testID,
 }: SkeletonListProps) {
   const renderSkeletonItem = () => {
     switch (variant) {
@@ -81,7 +86,14 @@ export function SkeletonList({
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      testID={testID}
+      accessible
+      accessibilityRole="progressbar"
+      accessibilityState={{ busy: true }}
+      accessibilityLabel={accessibilityLabel}
+    >
       {Array.from({ length: items }).map((_, index) => (
         <View
           key={index}
@@ -95,6 +107,9 @@ export function SkeletonList({
     </View>
   );
 }
+
+export const SkeletonList = memo(SkeletonListComponent);
+SkeletonList.displayName = 'SkeletonList';
 
 const styles = StyleSheet.create({
   container: {

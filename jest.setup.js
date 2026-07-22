@@ -15,11 +15,18 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
 jest.mock('react-native', () => ({
   View: 'View',
   Text: 'Text',
+  TextInput: 'TextInput',
   TouchableOpacity: 'TouchableOpacity',
+  Pressable: 'Pressable',
   Image: 'Image',
   ScrollView: 'ScrollView',
+  Switch: 'Switch',
+  Modal: 'Modal',
+  ActivityIndicator: 'ActivityIndicator',
   StyleSheet: {
     create: (styles) => styles,
+    flatten: (style) =>
+      Object.assign({}, ...[].concat(style).filter(Boolean)),
   },
   Animated: {
     Value: jest.fn(() => ({
@@ -27,6 +34,19 @@ jest.mock('react-native', () => ({
     })),
     timing: jest.fn(() => ({
       start: jest.fn((callback) => callback && callback()),
+    })),
+    spring: jest.fn(() => ({
+      start: jest.fn((callback) => callback && callback()),
+    })),
+    sequence: jest.fn(() => ({
+      start: jest.fn((callback) => callback && callback()),
+    })),
+    // loop() es intencionalmente un no-op en tests: en runtime real repite la
+    // animación indefinidamente, lo que causaría una recursión síncrona
+    // infinita con los mocks de timing/sequence de arriba (su start()
+    // invoca el callback inmediatamente).
+    loop: jest.fn(() => ({
+      start: jest.fn(),
     })),
     View: 'Animated.View',
   },

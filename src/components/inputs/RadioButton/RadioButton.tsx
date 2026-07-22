@@ -3,7 +3,7 @@
  * Radio button para selección única con soporte para grupos
  */
 
-import React from 'react';
+import React, { forwardRef, memo } from 'react';
 import {
   TouchableOpacity,
   View,
@@ -16,6 +16,7 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius } from '../../../tokens/borderRadius';
+import { fontSizes, fontWeights } from '../../../tokens/typography';
 
 export interface RadioButtonProps {
   label?: string;
@@ -35,88 +36,102 @@ const RADIO_SIZES = {
   large: 26,
 };
 
-export function RadioButton({
-  label,
-  value,
-  selected = false,
-  onSelect,
-  disabled = false,
-  size = 'medium',
-  style,
-  labelStyle,
-  testID,
-}: RadioButtonProps) {
-  const { theme } = useTheme();
-  const radioSize = RADIO_SIZES[size];
-  const innerSize = radioSize * 0.5;
-  
-  const handlePress = () => {
-    if (!disabled && onSelect) {
-      onSelect(value);
-    }
-  };
+export const RadioButton = memo(
+  forwardRef<React.ComponentRef<typeof TouchableOpacity>, RadioButtonProps>(
+    function RadioButton(
+      {
+        label,
+        value,
+        selected = false,
+        onSelect,
+        disabled = false,
+        size = 'medium',
+        style,
+        labelStyle,
+        testID,
+      },
+      ref
+    ) {
+      const { theme } = useTheme();
+      const radioSize = RADIO_SIZES[size];
+      const innerSize = radioSize * 0.5;
 
-  const getBorderColor = () => {
-    if (disabled) {
-      return '#d1d5db';
-    }
-    if (selected) {
-      return theme.primary;
-    }
-    return '#9ca3af';
-  };
+      const handlePress = () => {
+        if (!disabled && onSelect) {
+          onSelect(value);
+        }
+      };
 
-  return (
-    <TouchableOpacity
-      style={[styles.container, style]}
-      onPress={handlePress}
-      disabled={disabled}
-      activeOpacity={0.7}
-      testID={testID}
-    >
-      <View
-        style={[
-          styles.radio,
-          {
-            width: radioSize,
-            height: radioSize,
-            borderRadius: borderRadius.full,
-            borderColor: getBorderColor(),
-            opacity: disabled ? 0.5 : 1,
-          },
-        ]}
-      >
-        {selected && (
+      const getBorderColor = () => {
+        if (disabled) {
+          return theme.border;
+        }
+        if (selected) {
+          return theme.primary;
+        }
+        return theme.textDisabled;
+      };
+
+      return (
+        <TouchableOpacity
+          ref={ref}
+          style={[styles.container, style]}
+          onPress={handlePress}
+          disabled={disabled}
+          activeOpacity={0.7}
+          testID={testID}
+          accessible
+          accessibilityRole="radio"
+          accessibilityState={{ checked: selected, disabled }}
+          accessibilityLabel={label ?? value}
+        >
           <View
             style={[
-              styles.innerCircle,
+              styles.radio,
               {
-                width: innerSize,
-                height: innerSize,
+                width: radioSize,
+                height: radioSize,
                 borderRadius: borderRadius.full,
-                backgroundColor: disabled ? '#9ca3af' : theme.primary,
+                borderColor: getBorderColor(),
+                opacity: disabled ? 0.5 : 1,
               },
             ]}
-          />
-        )}
-      </View>
+          >
+            {selected && (
+              <View
+                style={[
+                  styles.innerCircle,
+                  {
+                    width: innerSize,
+                    height: innerSize,
+                    borderRadius: borderRadius.full,
+                    backgroundColor: disabled ? theme.textDisabled : theme.primary,
+                  },
+                ]}
+              />
+            )}
+          </View>
 
-      {label && (
-        <Text
-          style={[
-            styles.label,
-            {
-              color: disabled ? '#9ca3af' : theme.text,
-            },
-            labelStyle,
-          ]}
-        >
-          {label}
-        </Text>
-      )}
-    </TouchableOpacity>
-  );
-}
+          {label && (
+            <Text
+              style={[
+                styles.label,
+                {
+                  color: disabled ? theme.textDisabled : theme.text,
+                },
+                labelStyle,
+              ]}
+            >
+              {label}
+            </Text>
+          )}
+        </TouchableOpacity>
+      );
+    }
+  )
+);
+
+RadioButton.displayName = 'RadioButton';
 
 // RadioGroup Component
 interface RadioGroupProps {
@@ -135,7 +150,7 @@ interface RadioItemProps {
   disabled?: boolean;
 }
 
-export function RadioGroup({
+export const RadioGroup = memo(function RadioGroup({
   value,
   onChange,
   label,
@@ -184,13 +199,15 @@ export function RadioGroup({
       </View>
 
       {error && (
-        <Text style={[styles.error, { color: '#ef4444' }]}>
+        <Text style={[styles.error, { color: theme.error }]}>
           {error}
         </Text>
       )}
     </View>
   );
-}
+});
+
+RadioGroup.displayName = 'RadioGroup';
 
 // RadioItem Component para uso con RadioGroup
 export function RadioItem(_props: RadioItemProps) {
@@ -212,7 +229,7 @@ const styles = StyleSheet.create({
   },
   innerCircle: {},
   label: {
-    fontSize: 15,
+    fontSize: fontSizes.md,
     marginLeft: spacing.sm,
     flex: 1,
   },
@@ -220,8 +237,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   groupLabel: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: fontSizes.lg,
+    fontWeight: fontWeights.semibold,
     marginBottom: spacing.sm,
   },
   optionsContainer: {
@@ -232,7 +249,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   error: {
-    fontSize: 12,
+    fontSize: fontSizes.sm,
     marginTop: spacing.xs,
     marginLeft: spacing.sm + 22, // Align with label
   },

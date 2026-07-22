@@ -3,11 +3,11 @@
  * Item de lista versátil y consistente
  */
 
-import React, { ReactNode } from 'react';
-import { 
-  View, 
-  Pressable, 
-  StyleSheet, 
+import React, { memo, ReactNode } from 'react';
+import {
+  View,
+  Pressable,
+  StyleSheet,
   PressableProps,
   ViewStyle,
   StyleProp,
@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
-import { textVariants } from '../../../tokens/typography';
+import { textVariants, fontSizes } from '../../../tokens/typography';
 import { borderRadius } from '../../../tokens/borderRadius';
 
 // Tipo para iconos de Ionicons (compatible sin instalar @expo/vector-icons)
@@ -34,7 +34,7 @@ export interface ListItemProps extends Omit<PressableProps, 'style'> {
   style?: StyleProp<ViewStyle>;
 }
 
-export function ListItem({
+function ListItemComponent({
   title,
   description,
   leftIcon,
@@ -46,6 +46,10 @@ export function ListItem({
   divider = true,
   onPress,
   style,
+  accessible,
+  accessibilityLabel,
+  accessibilityState,
+  disabled,
   ...props
 }: ListItemProps) {
   const { theme } = useTheme();
@@ -62,7 +66,7 @@ export function ListItem({
                 { backgroundColor: theme.primary + '20' },
               ]}
             >
-              <Text style={{ fontSize: 20, color: theme.primary }}>
+              <Text style={{ fontSize: fontSizes.xxl, color: theme.primary }}>
                 {leftIcon}
               </Text>
             </View>
@@ -102,7 +106,7 @@ export function ListItem({
       {(rightIcon || rightComponent) && (
         <View style={styles.rightContainer}>
           {rightComponent || (
-            <Text style={{ fontSize: 20, color: theme.textSecondary }}>
+            <Text style={{ fontSize: fontSizes.xxl, color: theme.textSecondary }}>
               {rightIcon}
             </Text>
           )}
@@ -122,6 +126,11 @@ export function ListItem({
       <Pressable
         {...props}
         onPress={onPress}
+        disabled={disabled}
+        accessible={accessible ?? true}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel ?? title}
+        accessibilityState={{ disabled: disabled ?? undefined, ...accessibilityState }}
         style={({ pressed }) => [
           styles.container,
           itemStyle,
@@ -135,11 +144,18 @@ export function ListItem({
   }
 
   return (
-    <View style={[styles.container, itemStyle, style]}>
+    <View
+      style={[styles.container, itemStyle, style]}
+      accessible={accessible}
+      accessibilityLabel={accessibilityLabel}
+    >
       {content}
     </View>
   );
 }
+
+export const ListItem = memo(ListItemComponent);
+ListItem.displayName = 'ListItem';
 
 const styles = StyleSheet.create({
   container: {

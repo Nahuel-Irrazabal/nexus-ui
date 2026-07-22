@@ -53,3 +53,5 @@ export function AlertProvider({ children, icons = {} }: AlertProviderProps) {
     </AlertContext.Provider>
   );
 }
+
+AlertProvider.displayName = 'AlertProvider';

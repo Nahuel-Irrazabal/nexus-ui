@@ -3,7 +3,7 @@
  * Muestra imagen de perfil con fallback a iniciales y soporte para badges
  */
 
-import React from 'react';
+import React, { forwardRef, memo } from 'react';
 import {
   View,
   Image,
@@ -17,6 +17,7 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
 import { borderRadius } from '../../../tokens/borderRadius';
+import { fontWeights } from '../../../tokens/typography';
 
 type AvatarSize = 'xs' | 'small' | 'medium' | 'large' | 'xl' | number;
 type AvatarShape = 'circle' | 'square' | 'rounded';
@@ -30,6 +31,8 @@ export interface AvatarProps {
   shape?: AvatarShape;
   style?: StyleProp<ViewStyle>;
   testID?: string;
+  /** Label de accesibilidad. Si no se pasa, se usa `fallback` como fallback. */
+  accessibilityLabel?: string;
 }
 
 const AVATAR_SIZES = {
@@ -60,20 +63,25 @@ const getFontSize = (size: number): number => {
   return size * 0.4;
 };
 
-export function Avatar({
-  source,
-  size = 'medium',
-  fallback,
-  badge,
-  onPress,
-  shape = 'circle',
-  style,
-  testID,
-}: AvatarProps) {
+const AvatarBase = forwardRef<View, AvatarProps>(function Avatar(
+  {
+    source,
+    size = 'medium',
+    fallback,
+    badge,
+    onPress,
+    shape = 'circle',
+    style,
+    testID,
+    accessibilityLabel,
+  },
+  ref
+) {
   const { theme } = useTheme();
   const avatarSize = getSize(size);
   const avatarRadius = getAvatarRadius(shape, avatarSize);
   const fontSize = getFontSize(avatarSize);
+  const resolvedLabel = accessibilityLabel ?? fallback;
 
   const containerStyle: ViewStyle = {
     width: avatarSize,
@@ -88,52 +96,47 @@ export function Avatar({
   };
 
   const content = (
-    <View style={[containerStyle, style]} testID={testID}>
+    <View
+      ref={ref}
+      style={[containerStyle, style]}
+      testID={testID}
+      // Cuando hay onPress, la accesibilidad se declara en el TouchableOpacity
+      // que envuelve este View, para no duplicar el foco/anuncio del screen reader.
+      accessibilityRole={onPress ? undefined : 'image'}
+      accessibilityLabel={onPress ? undefined : resolvedLabel}
+    >
       {source ? (
-        <Image
-          source={source}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          resizeMode="cover"
-        />
+        <Image source={source} style={styles.image} resizeMode="cover" />
       ) : (
-        <Text
-          style={{
-            fontSize,
-            fontWeight: '600',
-            color: theme.text,
-          }}
-        >
+        <Text style={[styles.fallbackText, { fontSize, color: theme.text }]}>
           {fallback || '?'}
         </Text>
       )}
-      
-      {badge && (
-        <View
-          style={{
-            position: 'absolute',
-            bottom: -2,
-            right: -2,
-          }}
-        >
-          {badge}
-        </View>
-      )}
+
+      {badge && <View style={styles.badgeContainer}>{badge}</View>}
     </View>
   );
 
   if (onPress) {
     return (
-      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+      <TouchableOpacity
+        onPress={onPress}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={resolvedLabel}
+      >
         {content}
       </TouchableOpacity>
     );
   }
 
   return content;
-}
+});
+
+AvatarBase.displayName = 'Avatar';
+
+export const Avatar = memo(AvatarBase);
+Avatar.displayName = 'Avatar';
 
 // Avatar Group Component
 interface AvatarGroupProps {
@@ -144,18 +147,16 @@ interface AvatarGroupProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function AvatarGroup({
+function AvatarGroupBase({
   children,
   max = 3,
   size = 'medium',
-  spacing: spacingProp = -8,
+  spacing: spacingProp = -spacing.sm,
   style,
 }: AvatarGroupProps) {
-  const { theme } = useTheme();
   const avatars = React.Children.toArray(children) as React.ReactElement<AvatarProps>[];
   const displayAvatars = avatars.slice(0, max);
   const remaining = Math.max(0, avatars.length - max);
-  const avatarSize = getSize(size);
 
   return (
     <View style={[styles.groupContainer, style]}>
@@ -170,7 +171,7 @@ export function AvatarGroup({
           {React.cloneElement(avatar, { size })}
         </View>
       ))}
-      
+
       {remaining > 0 && (
         <View
           style={{
@@ -178,21 +179,33 @@ export function AvatarGroup({
             zIndex: 0,
           }}
         >
-          <Avatar
-            size={size}
-            fallback={`+${remaining}`}
-            shape="circle"
-          />
+          <Avatar size={size} fallback={`+${remaining}`} shape="circle" />
         </View>
       )}
     </View>
   );
 }
 
+AvatarGroupBase.displayName = 'AvatarGroup';
+
+export const AvatarGroup = memo(AvatarGroupBase);
+AvatarGroup.displayName = 'AvatarGroup';
+
 const styles = StyleSheet.create({
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  fallbackText: {
+    fontWeight: fontWeights.semibold,
+  },
+  badgeContainer: {
+    position: 'absolute',
+    bottom: -spacing.xxs,
+    right: -spacing.xxs,
+  },
   groupContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
 });
-

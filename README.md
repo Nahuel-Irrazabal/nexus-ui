@@ -33,11 +33,11 @@
 ```
 ╔══════════════════════════════════════════════════════════════════╗
 ║                                                                  ║
-║   🎨  27+ Componentes    │   🌓  Light/Dark Mode Automático     ║
+║   🎨  21 Componentes     │   🌓  Light/Dark Mode Automático     ║
 ║                          │                                       ║
 ║   📏  Design Tokens      │   🔧  3 Niveles de Personalización   ║
 ║                          │                                       ║
-║   🪝  7 Custom Hooks     │   📱  iOS + Android                  ║
+║   🪝  8 Custom Hooks     │   📱  iOS + Android                  ║
 ║                          │                                       ║
 ║   🧪  Tests con Jest     │   📘  TypeScript Estricto            ║
 ║                                                                  ║
@@ -50,7 +50,7 @@
 
 | Feature | Descripción |
 |---------|-------------|
-| **🧩 Componentes Modulares** | 27+ componentes organizados en 10 categorías, listos para producción |
+| **🧩 Componentes Modulares** | 21 componentes organizados en 10 categorías, listos para producción |
 | **🎨 Design Tokens** | Sistema completo de tokens para colores, espaciado, tipografía, sombras y más |
 | **🌓 Temas Dinámicos** | Soporte para Light/Dark mode con auto-detección del sistema |
 | **⚡ Alto Rendimiento** | Componentes optimizados con animaciones nativas |
@@ -153,7 +153,7 @@ function LoginScreen() {
 
 ## 🧩 Componentes
 
-Nexus UI incluye **29+ componentes** organizados en **10 categorías**:
+Nexus UI incluye **21 componentes** organizados en **10 categorías**:
 
 ### 📐 Layout
 

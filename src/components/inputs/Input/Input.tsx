@@ -4,7 +4,7 @@
  * Estilos por defecto vienen del theme (theme.components.input); cada app puede definirlos en defineTheme/createTheme.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { forwardRef, memo, useMemo, useState } from 'react';
 import {
   View,
   TextInput,
@@ -12,6 +12,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextInputProps,
+  AccessibilityState,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
@@ -27,104 +28,134 @@ export interface InputProps extends TextInputProps {
   inputStyle?: ViewStyle;
 }
 
-export function Input({
-  label,
-  error,
-  helperText,
-  leftIcon,
-  rightIcon,
-  containerStyle,
-  inputStyle,
-  editable = true,
-  ...props
-}: InputProps) {
-  const { theme } = useTheme();
-  const [isFocused, setIsFocused] = useState(false);
+/**
+ * Estado de accesibilidad extendido: `invalid` no forma parte del tipo oficial
+ * `AccessibilityState` de React Native (no existe API nativa para ello), pero se
+ * expone igual porque no rompe nada en runtime (se ignora si la plataforma no lo soporta)
+ * y documenta la intención de comunicar el estado de error del campo.
+ */
+type InputAccessibilityState = AccessibilityState & { invalid?: boolean };
 
-  const inputTheme: InputTheme = useMemo(
-    () => ({ ...defaultInputTheme, ...theme.components?.input }),
-    [theme.components?.input]
-  );
+export const Input = memo(
+  forwardRef<TextInput, InputProps>(function Input(
+    {
+      label,
+      error,
+      helperText,
+      leftIcon,
+      rightIcon,
+      containerStyle,
+      inputStyle,
+      editable = true,
+      accessibilityLabel,
+      ...props
+    },
+    ref
+  ) {
+    const { theme } = useTheme();
+    const [isFocused, setIsFocused] = useState(false);
 
-  const getBorderColor = () => {
-    if (error) return theme.error;
-    if (isFocused) return theme.primary;
-    return theme.border;
-  };
+    const inputTheme: InputTheme = useMemo(
+      () => ({ ...defaultInputTheme, ...theme.components?.input }),
+      [theme.components?.input]
+    );
 
-  const containerDynamicStyle: ViewStyle = {
-    borderColor: getBorderColor(),
-    backgroundColor:
-      inputTheme.backgroundColor !== undefined
-        ? inputTheme.backgroundColor
-        : editable
-          ? theme.surface
-          : theme.surfaceVariant,
-    borderRadius: inputTheme.borderRadius ?? defaultInputTheme.borderRadius,
-    borderWidth: inputTheme.borderWidth ?? defaultInputTheme.borderWidth,
-    paddingHorizontal: inputTheme.paddingHorizontal ?? defaultInputTheme.paddingHorizontal,
-    ...(inputTheme.borderBottomWidth !== undefined && {
-      borderBottomWidth: inputTheme.borderBottomWidth,
-    }),
-  };
+    const getBorderColor = () => {
+      if (error) return theme.error;
+      if (isFocused) return theme.primary;
+      return theme.border;
+    };
 
-  return (
-    <View style={[styles.container, containerStyle]}>
-      {label && (
-        <Text
-          style={[
-            styles.label,
-            {
-              color: theme.text,
-              fontSize: inputTheme.labelFontSize ?? defaultInputTheme.labelFontSize,
-              fontWeight: inputTheme.labelFontWeight ?? defaultInputTheme.labelFontWeight,
-            },
-          ]}
-        >
-          {label}
-        </Text>
-      )}
+    const containerDynamicStyle: ViewStyle = {
+      borderColor: getBorderColor(),
+      backgroundColor:
+        inputTheme.backgroundColor !== undefined
+          ? inputTheme.backgroundColor
+          : editable
+            ? theme.surface
+            : theme.surfaceVariant,
+      borderRadius: inputTheme.borderRadius ?? defaultInputTheme.borderRadius,
+      borderWidth: inputTheme.borderWidth ?? defaultInputTheme.borderWidth,
+      paddingHorizontal: inputTheme.paddingHorizontal ?? defaultInputTheme.paddingHorizontal,
+      ...(inputTheme.borderBottomWidth !== undefined && {
+        borderBottomWidth: inputTheme.borderBottomWidth,
+      }),
+    };
 
-      <View style={[styles.inputContainer, containerDynamicStyle, inputStyle]}>
-        {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
+    const accessibilityState: InputAccessibilityState = {
+      disabled: !editable,
+      ...(error ? { invalid: true } : {}),
+    };
 
-        <TextInput
-          {...props}
-          editable={editable}
-          style={[
-            styles.input,
-            {
-              color: theme.text,
-              fontSize: inputTheme.inputFontSize ?? defaultInputTheme.inputFontSize,
-              paddingVertical: inputTheme.paddingVertical ?? defaultInputTheme.paddingVertical,
-            },
-            leftIcon ? styles.inputWithLeftIcon : null,
-            rightIcon ? styles.inputWithRightIcon : null,
-          ]}
-          placeholderTextColor={theme.textDisabled}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-        />
+    return (
+      <View style={[styles.container, containerStyle]}>
+        {label && (
+          <Text
+            style={[
+              styles.label,
+              {
+                color: theme.text,
+                fontSize: inputTheme.labelFontSize ?? defaultInputTheme.labelFontSize,
+                fontWeight: inputTheme.labelFontWeight ?? defaultInputTheme.labelFontWeight,
+              },
+            ]}
+          >
+            {label}
+          </Text>
+        )}
 
-        {rightIcon && <View style={styles.iconRight}>{rightIcon}</View>}
+        <View style={[styles.inputContainer, containerDynamicStyle, inputStyle]}>
+          {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
+
+          <TextInput
+            {...props}
+            ref={ref}
+            editable={editable}
+            accessibilityLabel={accessibilityLabel ?? label}
+            accessibilityState={accessibilityState}
+            style={[
+              styles.input,
+              {
+                color: theme.text,
+                fontSize: inputTheme.inputFontSize ?? defaultInputTheme.inputFontSize,
+                paddingVertical: inputTheme.paddingVertical ?? defaultInputTheme.paddingVertical,
+              },
+              leftIcon ? styles.inputWithLeftIcon : null,
+              rightIcon ? styles.inputWithRightIcon : null,
+            ]}
+            placeholderTextColor={theme.textDisabled}
+            onFocus={(e) => {
+              setIsFocused(true);
+              props.onFocus?.(e);
+            }}
+            onBlur={(e) => {
+              setIsFocused(false);
+              props.onBlur?.(e);
+            }}
+          />
+
+          {rightIcon && <View style={styles.iconRight}>{rightIcon}</View>}
+        </View>
+
+        {(error || helperText) && (
+          <Text
+            style={[
+              styles.helperText,
+              {
+                color: error ? theme.error : theme.textSecondary,
+                fontSize: inputTheme.helperFontSize ?? defaultInputTheme.helperFontSize,
+              },
+            ]}
+          >
+            {error || helperText}
+          </Text>
+        )}
       </View>
+    );
+  })
+);
 
-      {(error || helperText) && (
-        <Text
-          style={[
-            styles.helperText,
-            {
-              color: error ? theme.error : theme.textSecondary,
-              fontSize: inputTheme.helperFontSize ?? defaultInputTheme.helperFontSize,
-            },
-          ]}
-        >
-          {error || helperText}
-        </Text>
-      )}
-    </View>
-  );
-}
+Input.displayName = 'Input';
 
 const styles = StyleSheet.create({
   container: {
@@ -159,4 +190,3 @@ const styles = StyleSheet.create({
     marginLeft: spacing.xs,
   },
 });
-
