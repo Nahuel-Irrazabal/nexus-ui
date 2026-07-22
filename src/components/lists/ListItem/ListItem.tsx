@@ -3,7 +3,7 @@
  * Item de lista versátil y consistente
  */
 
-import React, { memo, ReactNode } from 'react';
+import React, { forwardRef, memo, ReactNode } from 'react';
 import {
   View,
   Pressable,
@@ -34,24 +34,27 @@ export interface ListItemProps extends Omit<PressableProps, 'style'> {
   style?: StyleProp<ViewStyle>;
 }
 
-function ListItemComponent({
-  title,
-  description,
-  leftIcon,
-  rightIcon,
-  leftAvatar,
-  rightComponent,
-  badge,
-  multiline = false,
-  divider = true,
-  onPress,
-  style,
-  accessible,
-  accessibilityLabel,
-  accessibilityState,
-  disabled,
-  ...props
-}: ListItemProps) {
+function ListItemComponent(
+  {
+    title,
+    description,
+    leftIcon,
+    rightIcon,
+    leftAvatar,
+    rightComponent,
+    badge,
+    multiline = false,
+    divider = true,
+    onPress,
+    style,
+    accessible,
+    accessibilityLabel,
+    accessibilityState,
+    disabled,
+    ...props
+  }: ListItemProps,
+  ref: React.Ref<View>
+) {
   const { theme } = useTheme();
 
   const content = (
@@ -125,6 +128,7 @@ function ListItemComponent({
     return (
       <Pressable
         {...props}
+        ref={ref}
         onPress={onPress}
         disabled={disabled}
         accessible={accessible ?? true}
@@ -145,6 +149,7 @@ function ListItemComponent({
 
   return (
     <View
+      ref={ref}
       style={[styles.container, itemStyle, style]}
       accessible={accessible}
       accessibilityLabel={accessibilityLabel}
@@ -154,7 +159,7 @@ function ListItemComponent({
   );
 }
 
-export const ListItem = memo(ListItemComponent);
+export const ListItem = memo(forwardRef(ListItemComponent));
 ListItem.displayName = 'ListItem';
 
 const styles = StyleSheet.create({

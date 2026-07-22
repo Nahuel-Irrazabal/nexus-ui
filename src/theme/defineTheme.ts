@@ -52,7 +52,10 @@ export interface DefineThemeColors {
   // Efectos
   shadow?: string;
   overlay?: string;
-  
+
+  skeletonBase?: string;
+  skeletonHighlight?: string;
+
   /** Estilos de componentes (Input, etc.) opcionales */
   components?: ThemeComponents;
 
@@ -138,7 +141,8 @@ export function defineTheme(config: {
   const knownThemeKeys = new Set([
     'primary', 'primaryLight', 'primaryDark', 'onPrimary', 'secondary', 'secondaryLight', 'secondaryDark',
     'background', 'surface', 'surfaceVariant', 'text', 'textSecondary', 'textDisabled',
-    'border', 'divider', 'success', 'error', 'warning', 'info', 'shadow', 'overlay', 'components',
+    'border', 'divider', 'success', 'error', 'warning', 'info', 'shadow', 'overlay',
+    'skeletonBase', 'skeletonHighlight', 'components',
   ]);
 
   const lightTheme: Theme = {
@@ -176,7 +180,10 @@ export function defineTheme(config: {
     // Efectos
     shadow: config.light.shadow || defaultLightTheme.shadow,
     overlay: config.light.overlay || defaultLightTheme.overlay,
-    
+
+    skeletonBase: config.light.skeletonBase || defaultLightTheme.skeletonBase,
+    skeletonHighlight: config.light.skeletonHighlight || defaultLightTheme.skeletonHighlight,
+
     // Componentes
     components: lightComponents,
   };
@@ -224,7 +231,10 @@ export function defineTheme(config: {
     // Efectos
     shadow: config.dark.shadow || defaultDarkTheme.shadow,
     overlay: config.dark.overlay || defaultDarkTheme.overlay,
-    
+
+    skeletonBase: config.dark.skeletonBase || defaultDarkTheme.skeletonBase,
+    skeletonHighlight: config.dark.skeletonHighlight || defaultDarkTheme.skeletonHighlight,
+
     // Componentes
     components: darkComponents,
   };

@@ -77,7 +77,10 @@ export const defaultLightTheme = {
   
   shadow: 'rgba(0, 0, 0, 0.1)',
   overlay: 'rgba(0, 0, 0, 0.5)',
-  
+
+  skeletonBase: palette.neutral[300],
+  skeletonHighlight: 'rgba(255, 255, 255, 0.3)',
+
   // Componentes (Input, Text, etc.)
   components: { input: defaultInputTheme, text: defaultTextTheme },
 } as const;
@@ -110,7 +113,10 @@ export const defaultDarkTheme = {
   
   shadow: 'rgba(0, 0, 0, 0.4)',
   overlay: 'rgba(0, 0, 0, 0.7)',
-  
+
+  skeletonBase: '#2A2A2A',
+  skeletonHighlight: 'rgba(255, 255, 255, 0.1)',
+
   // Componentes (Input, Text, etc.)
   components: { input: defaultInputTheme, text: defaultTextTheme },
 } as const;
@@ -144,7 +150,12 @@ export interface Theme {
   
   shadow: string;
   overlay: string;
-  
+
+  /** Gris neutro para el placeholder del skeleton (no es un color "sólido" de fondo/borde) */
+  skeletonBase: string;
+  /** Highlight translúcido para la animación wave del skeleton */
+  skeletonHighlight: string;
+
   /** Estilos de componentes (Input, etc.) opcionales */
   components?: ThemeComponents;
 }

@@ -30,7 +30,7 @@ function SkeletonLoaderBase({
   style,
   testID,
 }: SkeletonLoaderProps) {
-  const { isDark } = useTheme();
+  const { theme } = useTheme();
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -107,15 +107,8 @@ function SkeletonLoaderBase({
     outputRange: [-200, 200],
   });
 
-  // CASO ESPECIAL — colores no tokenizados: el shimmer del skeleton necesita un
-  // gris neutro fijo (y un highlight blanco translúcido para el wave) que no
-  // dependen de theme.surface/theme.border, ya que esos tokens están pensados
-  // para fondos y bordes "sólidos" y no dan el contraste correcto para simular
-  // un placeholder de carga en ambos modos. Se mantienen como literal
-  // intencionalmente; si se agrega un token semántico tipo
-  // theme.skeletonBase/theme.skeletonHighlight a futuro, migrar esto.
-  const skeletonColor = isDark ? '#2A2A2A' : '#E0E0E0';
-  const waveColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.3)';
+  const skeletonColor = theme.skeletonBase;
+  const waveColor = theme.skeletonHighlight;
 
   return (
     <View
