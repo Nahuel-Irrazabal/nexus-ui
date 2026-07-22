@@ -15,6 +15,7 @@ import {
   ViewStyle,
   TextStyle,
   StyleProp,
+  DimensionValue,
 } from 'react-native';
 import { useTheme } from '../../../hooks/useTheme';
 import { spacing } from '../../../tokens/spacing';
@@ -35,7 +36,7 @@ export interface ModalProps {
   testID?: string;
 }
 
-const MODAL_SIZES = {
+const MODAL_SIZES: Record<ModalSize, DimensionValue> = {
   small: '70%',
   medium: '85%',
   large: '95%',

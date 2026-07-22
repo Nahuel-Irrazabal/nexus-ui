@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.0.0-blue.svg" alt="Version" />
+  <img src="https://img.shields.io/badge/version-2.1.0-blue.svg" alt="Version" />
   <img src="https://img.shields.io/badge/react--native-%3E%3D0.72-brightgreen.svg" alt="React Native" />
   <img src="https://img.shields.io/badge/typescript-strict-blue.svg" alt="TypeScript" />
   <img src="https://img.shields.io/badge/license-private-red.svg" alt="License" />
