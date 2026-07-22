@@ -3,7 +3,7 @@
  * Puente imperativo sobre el componente Alert — mismo patrón que ToastProvider/useToast
  */
 
-import React, { createContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useState, useCallback, memo, ReactNode } from 'react';
 import { Alert, AlertProps } from './Alert';
 
 type AlertVariant = NonNullable<AlertProps['variant']>;
@@ -23,7 +23,7 @@ interface AlertProviderProps {
   icons?: Partial<Record<AlertVariant, ReactNode>>;
 }
 
-export function AlertProvider({ children, icons = {} }: AlertProviderProps) {
+export const AlertProvider = memo(function AlertProvider({ children, icons = {} }: AlertProviderProps) {
   const [current, setCurrent] = useState<AlertConfig | null>(null);
 
   const confirm = useCallback((config: AlertConfig) => {
@@ -52,6 +52,6 @@ export function AlertProvider({ children, icons = {} }: AlertProviderProps) {
       />
     </AlertContext.Provider>
   );
-}
+});
 
 AlertProvider.displayName = 'AlertProvider';

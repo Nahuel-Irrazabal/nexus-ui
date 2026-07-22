@@ -18,10 +18,9 @@ import { getShadow } from '../../../tokens/shadows';
 import { fontSizes } from '../../../tokens/typography';
 import { palette } from '../../../tokens/colors';
 
-// NOTA: el Theme actual no tiene un token semántico de "texto sobre fondo de color"
-// (p.ej. onPrimary/contrastText) — ver unresolved en la entrega de este fix. Se usa
-// palette.neutral[0] como stopgap tokenizado en vez del literal '#fff' hardcodeado,
-// mismo patrón que Button.tsx (ON_PRIMARY_FALLBACK).
+// NOTA: el Theme actual no tiene tokens semánticos para contraste sobre colores no-primary
+// (onSuccess, onError, onWarning, onInfo). Se usa palette.neutral[0] como stopgap
+// tokenizado en vez de hardcodear '#fff'.
 const ON_COLOR_FALLBACK = palette.neutral[0];
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';

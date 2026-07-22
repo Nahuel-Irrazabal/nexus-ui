@@ -155,6 +155,8 @@ function LoginScreen() {
 
 Nexus UI incluye **21 componentes** organizados en **10 categorías**:
 
+> **Nota:** Los 20 componentes principales siguen la estructura `src/components/<categoría>/<Componente>/`. `ErrorBoundary` es una utilidad ubicada en `src/utils/components/` que no sigue esta convención.
+
 ### 📐 Layout
 
 | Componente | Descripción |
