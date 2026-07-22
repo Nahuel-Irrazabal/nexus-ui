@@ -2,6 +2,30 @@
 
 Todos los cambios notables de este proyecto se documentan en este archivo.
 
+## [2.2.0] - 2026-07-22
+
+### Agregado
+- **`Theme`**: nuevos tokens `skeletonBase`/`skeletonHighlight` (colores del placeholder de `SkeletonLoader`, antes hardcodeados como hex fijo por modo). Disponibles también en `defineTheme()`.
+- **`Sheet`**: prop `dismissLabel?: string` (default `'Cerrar'`) para overridear el `accessibilityLabel` del backdrop, antes hardcodeado.
+- **`ToastProvider`**: prop `closeAccessibilityLabel?: string` para overridear el label del botón de cierre del toast. Se exporta el tipo `ToastProviderProps`.
+- Tests reales (antes ausentes o smoke) para `ErrorBoundary`, `useAsync`, `useDebounce`, `usePrevious`. Cobertura global: 93.18% líneas / 90.64% branches (por encima del `coverageThreshold: 70%` declarado, ahora real).
+- `ListItem` ahora expone `forwardRef` (ref del `Pressable`/`View` subyacente).
+
+### Cambiado
+- `SkeletonLoader` usa `theme.skeletonBase`/`theme.skeletonHighlight` en vez de hex hardcodeados (`'#2A2A2A'`/`'#E0E0E0'`, `rgba` blancos) — ahora tokenizado igual que el resto de la librería.
+- `Checkbox`: el color del ícono de check (`✓`) ahora resuelve contraste real cuando se pasa un `color` custom, en vez de asumir siempre `theme.onPrimary` (pensado solo para `theme.primary`). Sin `color` custom, comportamiento idéntico al anterior.
+- `ToastProvider`: el default del label de cierre pasa de inglés (`'Close notification'`) a español (`'Cerrar notificación'`) por consistencia con el resto de la librería (overrideable con `closeAccessibilityLabel`).
+
+### Migración para apps consumidoras
+No hay breaking changes de API — todos los cambios son aditivos u opcionales.
+```bash
+npm update nexus-ui
+# o si no refresca por cache:
+rm -rf node_modules/nexus-ui && npm install
+```
+- Si la app define temas custom vía `createTheme`/`defineTheme` con acceso directo al objeto (no a través de `useTheme()`), TypeScript exigirá los nuevos campos `skeletonBase`/`skeletonHighlight` en el tipo `Theme`. Si usás `defineTheme()`, son opcionales y ya tienen default — no requiere cambios.
+- Si algún test/snapshot de consumidor depende del texto exacto `'Close notification'` en un `Toast`, actualizar a `'Cerrar notificación'` o pasar `closeAccessibilityLabel` explícito.
+
 ## [2.1.0] - 2026-07-02
 
 ### Agregado
