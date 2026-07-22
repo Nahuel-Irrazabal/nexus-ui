@@ -8,6 +8,16 @@ Librería de diseño RN (TypeScript, distribuida como fuente vía Metro — sin 
 ## Regla de orquestación
 El contexto principal orquesta. Todo trabajo sobre la librería (componente, mejora, perf, test, release) → delegar al **`nexus-expert`** en modo MANTENER. Review → `rn-reviewer`. Implementación de UI compleja → `rn-frontend`.
 
+## 🎟️ Gestión de tokens — reglas duras
+Un barrido de la librería toca decenas de archivos. Sin control agota el presupuesto y corta a la mitad. Reglas:
+
+1. **Máximo 3–4 subagentes en paralelo.** Nunca decenas. Barridos grandes → **olas de 3–4**, no todo de una.
+2. **Commit después de cada ola/tanda.** Es el checkpoint: si se agotan los tokens, no se pierde nada. *(Un `/nexus-audit` que corrigió 30+ componentes con 25 agentes en paralelo, sin commits, consumió 2.5M tokens y quedó a medias — no repetir.)*
+3. **Modelo explícito SIEMPRE.** Fixes mecánicos (memo, displayName, a11y, tokens) → `haiku`. Nunca una flota en el modelo de sesión.
+4. **Estimá antes de un barrido.** Si son >6 componentes o >10 archivos: proponé tandas commiteadas y confirmá con el usuario. NO "corregí todo" de una pasada.
+5. **Umbral de contexto 85%** → checkpointeá (commit + estado a un `.md`) y frená.
+6. **`/nexus-audit` REPORTA; corregir es aparte, por lotes.** Ver la propia skill.
+
 ## Convención canónica de componente
 ```
 src/components/<categoría>/<Componente>/

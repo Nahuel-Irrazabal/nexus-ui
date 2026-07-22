@@ -79,6 +79,14 @@ const u = useAuthStore(s => s.user)               const selectUser = (s) => s.us
 [ ] Imágenes con expo-image + placeholder
 ```
 
+## 🎟️ Economía de contexto (para agentes)
+Sos un subagente: el orquestador recibe tu **resultado**, no tu proceso. Cuidá el presupuesto de tokens:
+- Devolvé un **resumen compacto y accionable**, no volcados crudos de archivos ni logs completos.
+- **Leé on-demand** solo lo que la tarea necesita. No cargues módulos enteros "por las dudas".
+- **No re-leas** un archivo que ya está en contexto.
+- Al buscar, usá grep/glob dirigido antes que leer archivos completos.
+- Si la tarea es más grande de lo esperado, **decilo y proponé acotarla** — no la ejecutes entera consumiendo todo el presupuesto.
+
 ## Global
 - Sin `console.log` en producción.
 - Sin `any` explícito ni implícito.

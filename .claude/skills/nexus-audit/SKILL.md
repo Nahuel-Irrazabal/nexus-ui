@@ -9,6 +9,8 @@ Produce un reporte priorizado del estado de calidad de `/mnt/d/Apps/packages/nex
 
 Orquestás; el subagente `nexus-expert` (modo MANTENER) hace el barrido. **Verificar contra el código real, no asumir** — el backlog de abajo es baseline, puede haber cambiado.
 
+> ⚠️ **Esta skill REPORTA, no corrige.** El barrido de detección es 1–2 agentes que devuelven la tabla. Si el usuario después pide corregir, seguí las reglas de la sección final — **nunca** dispares un agente por hallazgo ni corrijas todo en una sola pasada (así se agotan 2.5M tokens y el trabajo queda a medias sin checkpoint).
+
 ## Delegar a `nexus-expert` un barrido de estos ejes
 
 **(a) Lecturas `theme.*` fuera del schema `Theme`**
@@ -47,3 +49,14 @@ Criterio de prioridad:
 - 🟡 **Higiene** (falta de `memo`/`displayName` sin ref, drift de docs, smoke tests).
 
 Cada fila con `archivo:línea` concreto (verificado) y un fix accionable. Cerrar con un resumen de 2-3 líneas y sugerir qué atacar primero.
+
+## Si el usuario pide CORREGIR (no solo reportar)
+
+No es esta skill: es un flujo de fixes por lotes. Reglas duras (ver también el `CLAUDE.md`):
+
+1. **Trabajá por lotes de 3–4 archivos/componentes**, no todos de una. **Máximo 3–4 agentes en paralelo** — nunca uno por hallazgo.
+2. **Commit después de cada lote** (`fix(nexus): <eje> en <componentes>`). El commit es el checkpoint: si se cortan los tokens, no se pierde progreso.
+3. **Modelo `haiku`** para fixes mecánicos (memo, displayName, a11y, tokens). El modelo de sesión solo para decisiones de diseño (ej: agregar un token nuevo al `Theme`).
+4. **Estimá primero**: contá cuántos archivos toca el reporte. Si son muchos, presentá el plan de lotes y confirmá con el usuario antes de arrancar.
+5. **Al 85% de contexto**, o si un lote deja tests/tsc en rojo: pará, commiteá lo verde, y escribí el estado a un `.md` (qué se hizo, qué falta) antes de seguir.
+6. **Verificá cada lote** (`npx tsc --noEmit`, `npx jest`) antes de commitear. No commitees un lote que rompe la build.
