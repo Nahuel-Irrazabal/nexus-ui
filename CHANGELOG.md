@@ -2,6 +2,19 @@
 
 Todos los cambios notables de este proyecto se documentan en este archivo.
 
+## [2.2.1] - 2026-07-22
+
+### Corregido
+- **`Button`**: `iconOnly` ya no hereda el `paddingVertical`/`paddingHorizontal` del `size` por defecto (`medium`). Ese padding no se reseteaba en `iconOnlyButton`, así que cualquier botón `iconOnly` con un contenedor fijo chico (36-40px, como los toggles de mostrar/ocultar contraseña o el selector de tema) le dejaba muy poco espacio real al ícono y se veía recortado/desbordado. Ahora `getPadding()` devuelve `{}` cuando `iconOnly` es `true`, dejando que `alignItems`/`justifyContent: 'center'` centren el ícono sin competir por espacio.
+
+### Migración para apps consumidoras
+No hay breaking changes de API. Los botones `iconOnly` con `style` custom (`minWidth`/`minHeight` chicos) ahora renderizan el ícono completo en vez de recortado — revisar visualmente cualquier `iconOnly` con contenedor forzado a menos de 48px.
+```bash
+npm update nexus-ui
+# o si no refresca por cache:
+rm -rf node_modules/nexus-ui && npm install
+```
+
 ## [2.2.0] - 2026-07-22
 
 ### Agregado

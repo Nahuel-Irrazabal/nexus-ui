@@ -110,6 +110,8 @@ function ButtonBase(
   };
 
   const getPadding = () => {
+    if (iconOnly) return {};
+
     switch (size) {
       case 'small':
         return { paddingVertical: spacing.sm, paddingHorizontal: spacing.md };

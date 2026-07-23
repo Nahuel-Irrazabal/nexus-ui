@@ -1,6 +1,6 @@
 {
   "name": "nexus-ui",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Nexus UI - Sistema de diseño completo para aplicaciones React Native",
   "main": "index.js",
   "types": "src/index.ts",

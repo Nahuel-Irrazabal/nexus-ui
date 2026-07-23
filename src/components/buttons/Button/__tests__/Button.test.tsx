@@ -94,6 +94,26 @@ describe('Button', () => {
     });
   });
 
+  describe('iconOnly — sin padding de size (no achica el ícono en contenedores fijos chicos)', () => {
+    it.each(['small', 'medium', 'large'] as const)(
+      'size="%s" no aplica paddingVertical/paddingHorizontal cuando iconOnly',
+      (size) => {
+        const { getByTestId } = renderWithTheme(
+          <Button
+            iconOnly
+            size={size}
+            icon={<></>}
+            testID="btn-icon-only"
+            style={{ minWidth: 36, minHeight: 36 }}
+          />
+        );
+        const buttonStyle = flattenStyle(getByTestId('btn-icon-only').props.style);
+        expect(buttonStyle.paddingVertical).toBeUndefined();
+        expect(buttonStyle.paddingHorizontal).toBeUndefined();
+      }
+    );
+  });
+
   describe('estado disabled', () => {
     it('usa theme.border como background y theme.textDisabled en el texto', () => {
       const { getByTestId, getByText } = renderWithTheme(
